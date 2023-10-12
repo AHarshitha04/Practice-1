@@ -24,35 +24,55 @@ const FileUpload = () => {
             console.error('Error uploading file: ', error);
         }
     };
-    const [data, setData] = useState([]);
+
+    // const [data, setData] = useState([]);
+    // useEffect(() => {
+    //     axios.get("http://localhost:3080/")
+
+    //         .then(res => setData(res.data))
+
+    //         .catch(err => console.log(err));
+    // }, [])
+
+    const [imageData, setImageData] = useState('');
 
     useEffect(() => {
-
-        axios.get("http://localhost:3080/")
-
-            .then(res => setData(res.data))
-
-            .catch(err => console.log(err));
-
-    }, [])
-
-
+        axios.get('http://localhost:3080/images/', { responseType: 'arraybuffer' })
+            .then(response => {
+                const base64Image = btoa(
+                    new Uint8Array(response.data).reduce((data, byte) => data + String.fromCharCode(byte), '')
+                );
+                setImageData(`data:image/jpeg;base64,${base64Image}`);
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }, []);
     return (
         <div>
             <input type="file" onChange={handleFileChange} />
             <button onClick={handleUpload}>Upload</button>
-            {
+            {/* {
                 data.map((img,index)=>{
                     return(
-                    <div key={index}>
-                            <img src={`https://drive.google.com/uc?export=view&id=${img.column1}`} alt="hjgj" />
-                            {/* <h1>{img.column1}</h1> */}
+                    <div key={index} >
+                           <div style={{display:'flex',gap:'5rem'}}>
+                            <h1>{img.column1}</h1>
+                            <h1>{img.column2}</h1>
+                            <h1></h1>
+                            <img src={img.image_column} alt="" />
+                           </div>
                     </div>
                     )
 
                 })
-            }
+            } */}
        
+       {imageData ? (
+                <img src={imageData} alt="Image" />
+            ) : (
+                <p>Loading image...</p>
+            )}
 
         </div>
     );
