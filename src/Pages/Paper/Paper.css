@@ -197,15 +197,17 @@ body {
   font-size: 22px;
 }
 .rightsidebar {
-  position: relative;
-  top: 60px;
-  right: 380px;
+  /* position: relative; */
+  /* top: 60px; */
+  /* right: 380px; */
   padding: 10px;
   /* margin-top: 105px; */
   /* margin-left: 290px; */
   text-align: center;
   background-color: #b3cbda;
   border-left: 2px solid rgb(87, 103, 121);
+  height: 50rem;
+  width: 50rem;
   /* width: 500px; */
   /* width: 300px;
 height: 950px; */
@@ -249,4 +251,10 @@ height: 950px; */
   text-align: justify;
   font-size: 20px;
   font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+}
+
+
+
+.qps_button_sections{
+  display: flex;
 }
