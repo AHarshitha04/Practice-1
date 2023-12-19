@@ -2994,19 +2994,6 @@ app.get('/subjects/:testCreationTableId', async (req, res) => {
   }
 });
 
-app.get("/fetchSections/:testCreationTableId", async (req, res) => {
-  const { testCreationTableId } = req.params;
-  try {
-    const [rows] = await db.query(
-      "SELECT * FROM sections WHERE testCreationTableId = ?",
-      [testCreationTableId]
-    );
-    res.json(rows);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
 
 
 
@@ -3014,180 +3001,8 @@ app.get("/fetchSections/:testCreationTableId", async (req, res) => {
 
 // --------------------------------------------code for fetching questions and options with testcreationid and subjectid---------------------------
 
-// app.get("/getPaperData/:testCreationTableId/:subjectId", async (req, res) => {
-//   try {
-//     const subjectId = req.params.subjectId;
-//     const testCreationTableId = req.params.testCreationTableId;
- 
-//     // Fetch data from testCreationTableId table
-//     const testData = await getDataByTestCreationTableId(testCreationTableId);
- 
-//     // Fetch question data based on subjectId and document_Id
-//     const questions = await getQuestionsBySubject(subjectId, testCreationTableId);
- 
-//     // Fetch option data based on questions and document_Id
-//     const options = await getOptionsByQuestions(questions, testCreationTableId);
- 
-//     // // Fetch solution data based on questions and document_Id
-//     // const solutions = await getSolutionsByQuestionsAndDocumentId(questions, testCreationTableId);
- 
-//     res.json({
-//       testData,
-//       questions,
-//       options,
-//       // solutions,
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send('Error fetching data from the database.');
-//   }
-// });
-// // Reusable function to get data from testCreationTableId table
-// async function getDataByTestCreationTableId(testCreationTableId) {
-//   try {
-//     const query = `
-//       SELECT *
-//       FROM test_creation_table
-//       WHERE testCreationTableId = ?  
-//     `;
-//     const [results] = await db.query(query, [testCreationTableId]);
- 
-//     return results; // Adjust this based on your actual table structure
-//   } catch (err) {
-//     console.error(`Error fetching data from test_creation_table: ${err}`);
-//     throw err;
-//   }
-// }
- 
- 
-// // Reusable function to get questions data based on subjectId and document_Id
-// async function getQuestionsBySubject(subjectId, testCreationTableId) {
-//   try {
-//     const query = `
-//       SELECT question_id, question_img
-//       FROM questions
-//       WHERE subjectId = ? AND testCreationTableId = ?  
-//     `;
-//     const [results] = await db.query(query, [subjectId, testCreationTableId]);
-//     const optionsWithBase64 = results.map(option => ({
-//       question_id: option.question_id,
-//       question_img: option.question_img.toString('base64'),
-//     }));
-//     return optionsWithBase64;
-//   } catch (err) {
-//     console.error(`Error fetching questions: ${err}`);
-//     throw err;
-//   }
-// }
- 
-// // Reusable function to get options data based on questions and document_Id
-// async function getOptionsByQuestions(questions, testCreationTableId) {
-//   try {
-//     const questionIds = questions.map((question) => question.question_id);
-
-//     // Generate the placeholders dynamically based on the number of elements in questionIds
-//     const placeholders = questionIds.map(() => '?').join(',');
-
-//     const query = `
-//       SELECT question_id, option_img
-//       FROM options
-//       WHERE question_id IN (${placeholders})
-//     `;
-
-//     const [results] = await db.query(query, [...questionIds, testCreationTableId]);
-
-//     // Convert BLOB data to base64 for sending in the response
-//     const optionsWithBase64 = results.map((option) => ({
-//       question_id: option.question_id,
-//       option_img: option.option_img.toString('base64'),
-//     }));
-
-//     return optionsWithBase64;
-//   } catch (err) {
-//     console.error(`Error fetching options: ${err.message}`);
-//     throw err;
-//   }
-// }
-
- 
-// // Reusable function to get solutions data based on questions and document_Id
-// // async function getSolutionsByQuestionsAndDocumentId(questions, testCreationTableId) {
-// //   try {
-// //     const questionIds = questions.map(question => question.question_id);
-// //     const query = `
-// //       SELECT question_id, solution_img
-// //       FROM solution
-// //       WHERE question_id IN (?)
-// //     `;
-// //     const [results] = await db.query(query, [questionIds, testCreationTableId]);
- 
-// //     // Convert BLOB data to base64 for sending in the response
-// //     const solutionsWithBase64 = results.map(solution => ({
-// //       question_id: solution.question_id,
-// //       solution_img: solution.solution_img.toString('base64'),
-// //     }));
- 
-// //     return solutionsWithBase64;
-// //   } catch (err) {
-// //     console.error(`Error fetching solutions: ${err}`);
-// //     throw err;
-// //   }
-// // }
- 
-// function combineImage(questions, options, solutions) {
-//   const combinedImages = [];
- 
-//   for (let i = 0; i < questions.length; i++) {
-//     const questionImage = questions[i].question_img;
-//     const optionImages = options
-//       .filter((opt) => opt.question_id === questions[i].question_id)
-//       .map((opt) => opt.option_img);
-//     // const solutionImage = solutions.find(
-//     //   (sol) => sol.question_id === questions[i].question_id
-//     // )?.solution_img;
- 
-//     combinedImages.push({
-//       questionImage,
-//       optionImages,
-//       // solutionImage,
-//     });
-//   }
- 
-//   return combinedImages;
-// }
 
 
-// app.get("/subjectData", async (req, res) => {
-//   // FetchData
-//   try {
-//     // const {subjectId } = req.params;
-//     // const [rows] = await db.query("SELECT * FROM subjects  WHERE subjectname=1");
-//     // const [rows] = await db.query("SELECT * FROM subjects WHERE subjectId = ( SELECT Min(subjectId)  FROM subjects  )");
-
-
-//     const [rows] = await db.query("SELECT * FROM subjects WHERE subjectId = (SELECT MIN(subjectId) FROM subjects) ORDER BY RAND()    LIMIT 1")
-    
-
-//     // SELECT exam_name FROM 2egquiz_exam WHERE course_id = ( SELECT Min(course_id+2)  FROM 2egquiz_exam  );"
-//     res.json(rows);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// });
-
-
-// app.get("/subjectData/:subjectId", async (req, res) => {
-//   // FetchData
-//   try {
-//     const {subjectId } = req.params;
-//     const [rows] = await db.query("SELECT * FROM subjects WHERE subjectId=?",[subjectId]);
-//     res.json(rows);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// });
 
 
 app.get("/subjectData1/:courseCreationId", async (req, res) => {
@@ -3217,50 +3032,11 @@ app.get("/subjectData2/:testCreationTableId", async (req, res) => {
 
 
 
-// app.get("/subjectData/:testCreationTableId", async (req, res) => {
-//   // FetchData
-//   try {
-//     const {testCreationTableId } = req.params;
-//     const [rows] = await db.query(" SELECT DISTINCT subjectId FROM course_subjects JOIN test_creation_table ON course_subjects.courseCreationId = test_creation_table.courseCreationId WHERE test_creation_table.testCreationTableId  = ?;",[testCreationTableId]);
-//     res.json(rows);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// });
-// app.get("/subjectData/:testCreationTableId", async (req, res) => {
-//   try {
-//     // Extract testCreationTableId from the request parameters
-//     const { testCreationTableId } = req.params;
-//     console.log("testCreationTableId:", testCreationTableId);
-
-//     // Construct and log the SQL query
-//     const sqlQuery = "SELECT DISTINCT subjectId FROM course_subjects JOIN test_creation_table ON course_subjects.courseCreationId = test_creation_table.courseCreationId WHERE test_creation_table.testCreationTableId = ?";
-//     console.log("SQL Query:", sqlQuery);
-
-//     // Execute the query against the database
-//     const [rows] = await db.query(sqlQuery, [testCreationTableId]);
-
-//     // Respond with the results
-//     res.json(rows);
-//   } catch (error) {
-//     // Log and respond with an internal server error if there's an issue
-//     console.error("Error:", error);
-//     res.status(500).json({ error: "Internal Server Error" });
-//   }
-// });
-
-
-// SELECT DISTINCT subjectId
-// FROM course_subjects
-// JOIN test_creation_table ON course_subjects.courseCreationId = test_creation_table.courseCreationId
-// WHERE test_creation_table.courseCreationId = 3;
-
 app.get("/fetchSections/:testCreationTableId/:subjectId", async (req, res) => {
   const { testCreationTableId,subjectId } = req.params;
   try {
     const [rows] = await db.query(
-      "SELECT sectionName,noOfQuestions FROM sections WHERE testCreationTableId = ? AND subjectId = ?",
+      "SELECT sectionName,noOfQuestions,sectionId FROM sections WHERE testCreationTableId = ? AND subjectId = ?",
       [testCreationTableId,subjectId]
     );
     res.json(rows);
@@ -3270,6 +3046,32 @@ app.get("/fetchSections/:testCreationTableId/:subjectId", async (req, res) => {
   }
 });
 
+
+
+app.get('/courses/count', async (req, res) => {
+  try {
+    const [results, fields] = await db.execute(
+      'SELECT examId, COUNT(*) AS numberOfCourses FROM course_creation_table GROUP BY examId;'
+    );
+    res.json(results);
+  } catch (error) {
+    console.error('Error fetching course count:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+app.get('/Test/count', async (req, res) => {
+  try {
+    const [results, fields] = await db.execute(
+      'SELECT courseCreationId, COUNT(*) AS numberOfTests FROM test_creation_table GROUP BY courseCreationId;'
+    );
+    res.json(results);
+  } catch (error) {
+    console.error('Error fetching course count:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 
 app.get("/getPaperData/:testCreationTableId/:subjectId", async (req, res) => {
   try {

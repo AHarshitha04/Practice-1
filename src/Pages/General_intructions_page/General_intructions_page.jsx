@@ -422,6 +422,8 @@ export const General_intructions_page_container = ({ seconds }) => {
     fetchSubjects();
   }, [subjectId]);
 
+
+
   // const [subjectId, setSubjectId] = useState([]);
   // const handlePaperData = async (typeOfTestId) => {
   //   console.log("working");
@@ -454,7 +456,6 @@ export const General_intructions_page_container = ({ seconds }) => {
   //             ...question,
   //             options: data.options.slice(index * 4, (index + 1) * 4), // Assuming 4 options per question
   //           }));
-
   //           setQuestionData(mergedData);
   //         } else {
   //           const testData = await response.json();
@@ -472,6 +473,7 @@ export const General_intructions_page_container = ({ seconds }) => {
   // const [courseCreationId]=useParams('')
 
   // const [minsubjectid, setminsubjectid] = useState('');
+  
   const [minsubjectid, setminsubjectid] = useState("");
   useEffect(() => {
     const fetchSubjects = async () => {
@@ -539,13 +541,13 @@ export const General_intructions_page_container = ({ seconds }) => {
 
   return (
     <>
-      <div>
-        <h2>General Instructions</h2>
-        <ul>
+      <div className="Instructions_container">
+        <h1>General Instructions</h1>
+        <ul className="Instructions_points">
           {instructionsData.map((instruction, index) => (
             <React.Fragment key={instruction.id}>
-              {index === 0 && <li>{instruction.instructionHeading}</li>}
-              <li>{instruction.points}</li>
+              {index === 0 && <h2>{instruction.instructionHeading}</h2>}
+              <li className="Instructions_points_list">{instruction.points}</li>
             </React.Fragment>
           ))}
         </ul>

@@ -7974,9 +7974,28 @@
 
 // -----------------------------------------------END MAIN WORKING CODE--------------------------
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import ButtonsFunctionality from "./ButtonsFunctionality";
+import './Paper.css'
+
 const Paper1 = () => {
   const [data, setData] = useState(null);
   const { subjectId, testCreationTableId } = useParams();
@@ -8032,6 +8051,17 @@ const Paper1 = () => {
     };
   };
 
+  let currentSectionIndex = 0;
+  let currentQuestionCount = 0;
+
+  const updateCurrentSection = () => {
+    currentSectionIndex += 1;
+    currentQuestionCount = 0;
+    setCurrentSectionName(
+      sortedSections[currentSectionIndex]?.sectionName || ""
+    );
+  };
+
   const handleSubmit = () => {
     window.alert("Your Test has been Submitted!! Click Ok to See Result.");
 
@@ -8047,6 +8077,7 @@ const Paper1 = () => {
     // Add any additional logic you need for submitting the exam
     // For example, you might want to send this data to the server.
     // Redirect to the result page
+
     navigate("/result", {
       state: {
         answeredCount: answered,
@@ -8056,16 +8087,25 @@ const Paper1 = () => {
         VisitedCount: VisitedCount,
       },
     });
+
   };
+
+  //main
+  // const handleQuestionSelect = (questionNumber) => {
+  //   setCurrentQuestionIndex(questionNumber - 1);
+  //   setActiveQuestion(questionNumber - 1);
+  // };
 
   const handleQuestionSelect = (questionNumber) => {
     setCurrentQuestionIndex(questionNumber - 1);
     setActiveQuestion(questionNumber - 1);
+  
+    // Call the function to update the current section when a question is selected
+    updateCurrentSection();
+  
+    // Update the current section name
+    setCurrentSectionName(sortedSections[currentSectionIndex]?.sectionName || "");
   };
-
-  // const { subjectId, testCreationTableId } = useParams();
-  // const [Subjects, setSubjects] = useState([]);
-  // const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
   // Function to set data in local storage
   const setLocalStorageData = (key, data) => {
@@ -8086,10 +8126,11 @@ const Paper1 = () => {
   // const [selectedAnswers, setSelectedAnswers] = useState(initialSelectedOption);
 
   // ----------------------------------BUTTON CODE-----------------------------------------------------
-
+  const [sortedSections] = useState("");
   //working code
   useEffect(() => {
     const fetchData = async () => {
+      let sortedSections = [];
       try {
         // Fetch all subjects
         const responseSubjects = await fetch(
@@ -8127,13 +8168,17 @@ const Paper1 = () => {
         // Use linkUrl as needed in your component
 
         //  ---------------------------------------------------------
+
         const responseSections = await fetch(
           `http://localhost:4009/fetchSections/${testCreationTableId}/${defaultSubjectId}`
         );
         const sectionsData = await responseSections.json();
+        console.log("sectionsData:", sectionsData);
         const sortedSections = sectionsData.sort(
           (a, b) => b.noOfQuestions - a.noOfQuestions
         );
+        console.log("sortedSections:", sortedSections);
+
         setSections(sortedSections);
 
         // Track the current section index and current question count
@@ -8141,15 +8186,16 @@ const Paper1 = () => {
         let currentQuestionCount = 0;
         let currentSectionName = "";
 
-        // Function to update the current section based on the question count
+        // Function to update the current section based on the question count 1st code
         const updateCurrentSection = () => {
           currentSectionIndex += 1;
           currentQuestionCount = 0;
           currentSectionName =
             sortedSections[currentSectionIndex]?.sectionName || "";
         };
-
         // Initial display of questions
+
+        //2nd one
         const displayQuestions = () => {
           const currentSection = sortedSections[currentSectionIndex];
 
@@ -8157,9 +8203,7 @@ const Paper1 = () => {
             // Set the initial section name if not set
             if (!currentSectionName) {
               setCurrentSectionName(currentSection.sectionName);
-              console.log(
-                `Displaying questions for ${currentSection.sectionName}`
-              );
+              console.log("Current Section ID:", currentSection.sectionId);
             }
 
             currentQuestionCount += 1;
@@ -8168,8 +8212,8 @@ const Paper1 = () => {
             displayQuestions();
           }
         };
-
         displayQuestions();
+
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -8178,43 +8222,11 @@ const Paper1 = () => {
     fetchData();
   }, [testCreationTableId, subjectId]);
 
-  //WORKING CODE FOR ALL SECTIONS TO DISPLAY
-  // const [sections, setSections] = useState([]);
-  // useEffect(() => {
-  //   const fetchSections = async () => {
-  //     try {
-  //       const response = await fetch(
-  //         `http://localhost:4009/fetchSections/${testCreationTableId}`
-  //       );
-  //       const data = await response.json();
-  //       setSections(data);
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   };
-
-  //   fetchSections();
-  // }, [testCreationTableId]);
-
-  // const [sections, setSections] = useState([]);
-  // useEffect(() => {
-  //   const fetchSections = async () => {
-  //     try {
-  //       const response = await fetch(
-  //         `http://localhost:4009/fetchSections/${testCreationTableId}/${defaultSubjectId}`
-  //       );
-  //       const data = await response.json();
-  //       setSections(data);
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   };
-
-  //   fetchSections();
-  // }, [testCreationTableId,subjectId]);
 
   const [selectedAnswersMap, setSelectedAnswersMap] = useState({});
+
   //working code
+
   const handleSubjectsClick = async (clickedSubjectId) => {
     setData(null);
     setCurrentQuestionIndex(0); // Reset current question index
@@ -8223,7 +8235,7 @@ const Paper1 = () => {
     const selectedAnswersForSubject =
       selectedAnswersMap[clickedSubjectId] || [];
     setSelectedAnswers(selectedAnswersForSubject);
-
+    setSelectedSubject(clickedSubjectId);
     try {
       const response = await fetch(
         `http://localhost:4009/getPaperData/${testCreationTableId}/${clickedSubjectId}`
@@ -8241,13 +8253,33 @@ const Paper1 = () => {
   };
 
   //working code
-  const handleNextClick = () => {
-    // Update the current question index to move to the next question
-    setCurrentQuestionIndex((prevIndex) =>
-      prevIndex < data.questions.length - 1 ? prevIndex + 1 : prevIndex
-    );
-  };
 
+  const handleNextClick = () => {
+    setCurrentQuestionIndex((prevIndex) => {
+      if (prevIndex < data.questions.length - 1) {
+        const nextIndex = prevIndex + 1;
+        return nextIndex;
+      } else {
+        const currentSectionIndex = data.sections.findIndex(
+          (section) => section.questions === data.questions
+        );
+  
+        const nextSectionIndex =
+          currentSectionIndex < data.sections.length - 1
+            ? currentSectionIndex + 1
+            : currentSectionIndex;
+  
+        // Set the current question index to the first question in the next section
+        setCurrentQuestionIndex(nextSectionIndex);
+  
+        // Update the current section name when moving to the next section
+        setCurrentSectionName(sortedSections[nextSectionIndex]?.sectionName || "");
+  
+        return nextSectionIndex;
+      }
+    });
+  };
+  
   const handlePreviousClick = () => {
     // Update the current question index to move to the previous question
     setCurrentQuestionIndex((prevIndex) =>
@@ -8260,6 +8292,17 @@ const Paper1 = () => {
     updatedSelectedAnswers[currentQuestionIndex] = "";
     setSelectedAnswers(updatedSelectedAnswers);
   };
+
+  const handleSectionButtonClick = (clickedSectionId) => {
+    // Use the clicked section ID to update the section name or perform any other actions
+    setCurrentSectionName(sortedSections[clickedSectionId]?.sectionName || "");
+  };
+
+
+//   const handleSubjectSelect = (subject) => {
+//     // Set the selected subject when a subject button is clicked
+//     setSelectedSubject(subject);
+// };
 
   // ---------------------------------Timer code Start--------------------------------
   const [timer, setTimer] = useState(0);
@@ -8308,82 +8351,74 @@ const Paper1 = () => {
 
   return (
     <div>
+      
       <div className="subjects">
         {Subjects.map((subjectTitle) => (
           <li key={subjectTitle.subjectId}>
             <button
               onClick={() => handleSubjectsClick(subjectTitle.subjectId)}
-              className="subject-btn"
+              className="subject_btn"
             >
-              {/* {subjectTitle.subjectId[0]} */}
               {subjectTitle.subjectName}
             </button>
           </li>
         ))}
       </div>
 
-      <div className="second-header">
-        {/* <div className="single-select-question">
-          {sections.map((sectionTitle, index) => (
-            <li key={index}>
-              <p>{sectionTitle.sectionName}</p>
-            </li>
-          ))}
-        </div> */}
-
-        <div className="right-header">
-          <div className="marks">
-            Marks: <div className="plus-mark">+1</div>
-            <div className="minus-mark">-1</div>
-          </div>
-          <div>Timer: {formatTime(timer)}</div>
-        </div>
-      </div>
-
       {data !== null && data.questions.length > 0 ? (
         <div className="qps_button_sections">
           <div className="question_paper_section">
-            <div className="single-select-question">
-              <li>
-                <p>Current Section: {currentSectionName}</p>
-              </li>
-            </div>
-            <div className="question">
-              {/* Render the current question based on currentQuestionIndex */}
-              <h3>{currentQuestionIndex + 1}.</h3>
-              <img
-                src={`data:image/png;base64,${data.questions[currentQuestionIndex].question_img}`}
-                alt="Question"
-              />
-            </div>
-
-            {/* Map over options for the current question and render them */}
-            {data.options
-              .filter(
-                (opt) =>
-                  opt.question_id ===
-                  data.questions[currentQuestionIndex].question_id
-              )
-              .map((option, optionIndex) => (
-                <div className="option" key={option.option_id}>
-                  <li key={optionIndex}>
-                    <input
-                      type="radio"
-                      name={`question-${currentQuestionIndex}-option`}
-                      value={optionIndex}
-                      checked={
-                        selectedAnswers[currentQuestionIndex] === optionIndex
-                      }
-                      // onChange={() => onAnswerSelected(subjectIndex, optionIndex)}
-                      onChange={() => onAnswerSelected(optionIndex)}
-                    />
-                    <img
-                      src={`data:image/png;base64,${option.option_img}`}
-                      alt="Option"
-                    />
-                  </li>
+            <div className="second-header">
+              <div className="single-select-question">
+                <li>
+                  <p>Current Section: {currentSectionName}</p>
+                </li>
+              </div>
+              <div className="right-header">
+                <div className="marks">
+                  Marks: <div className="plus-mark">+1</div>
+                  <div className="minus-mark">-1</div>
                 </div>
-              ))}
+                <div>Timer: {formatTime(timer)}</div>
+              </div>
+            </div>
+            <div className="question_options_container">
+              <div className="question">
+                {/* Render the current question based on currentQuestionIndex */}
+                <h3>{currentQuestionIndex + 1}.</h3>
+                <img
+                  src={`data:image/png;base64,${data.questions[currentQuestionIndex].question_img}`}
+                  alt="Question"
+                />
+              </div>
+              {/* Map over options for the current question and render them */}
+              {data.options
+                .filter(
+                  (opt) =>
+                    opt.question_id ===
+                    data.questions[currentQuestionIndex].question_id
+                )
+                .map((option, optionIndex) => (
+                  <div className="option" key={option.option_id}>
+                    <li key={optionIndex}>
+                      <input
+                        type="radio"
+                        name={`question-${currentQuestionIndex}-option`}
+                        value={optionIndex}
+                        checked={
+                          selectedAnswers[currentQuestionIndex] === optionIndex
+                        }
+                        // onChange={() => onAnswerSelected(subjectIndex, optionIndex)}
+                        onChange={() => onAnswerSelected(optionIndex)}
+                      />
+                      <img
+                        src={`data:image/png;base64,${option.option_img}`}
+                        alt="Option"
+                      />
+                    </li>
+                  </div>
+                ))}
+            </div>
 
             <div>
               <button className="clear-btn" onClick={clearResponse}>
@@ -8414,6 +8449,7 @@ const Paper1 = () => {
               VisitedCount={VisitedCount}
               selectedSubject={selectedSubject}
               data={data}
+              onSectionButtonClick={handleSectionButtonClick} 
             />
             <button onClick={handleSubmit} id="resume_btn">
               Submit

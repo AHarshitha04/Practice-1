@@ -324,4 +324,21 @@
     width: 15px;
     height: 15px;
 
+
+   
+}
+
+.Instructions_container{
+    padding: 20px;
+    text-align: center;
+
+    .Instructions_points{
+        text-align: justify;
+        padding: 10px;
+        line-height: 2rem;
+    }   
+    .Instructions_points_list{
+        list-style-type: decimal;
+        
+    }
 }

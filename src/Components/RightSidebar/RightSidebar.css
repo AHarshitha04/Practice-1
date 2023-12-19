@@ -140,3 +140,7 @@ align-items: center;
     padding: 9px;   
     background: red;
 }
+
+.right_bar_Buttons {
+    cursor: pointer;
+}

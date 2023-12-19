@@ -296,7 +296,7 @@ export const Intro_container = () => {
   return (
     <>
       <div>
-        hello
+        
         {SubjectData1.map((data) => (
           <p>{data.subjectName}</p>
         ))}
