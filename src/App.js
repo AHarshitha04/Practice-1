@@ -32,7 +32,7 @@ function App() {
         {/* <Route path='/Paper' element={<Paper />} /> */}
         {/* <Route path='/subjects/:testCreationTableId/:subjectId'  element={<Paper1 />} /> */}
 
-        <Route path='/getPaperData/:testCreationTableId/:minsubjectid'  element={<Paper1 />} />
+        <Route path='/getPaperData/:testCreationTableId/:minsubjectid/'  element={<Paper1 />} />
 
         {/* <Route path='/subjects/:testCreationTableId' element={<Paper1 />} /> */}
 

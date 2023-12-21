@@ -151,7 +151,7 @@ const FullTest = () => {
               </div>
               <div className="test-contents2">
                 <li>
-                  <Link to={`/Instructions/${test.testCreationTableId}/`}>
+                  <Link to={`/Instructions/${test.testCreationTableId}`}>
                     Start Test
                   </Link>
                 </li>

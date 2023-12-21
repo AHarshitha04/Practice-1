@@ -187,25 +187,25 @@ export const Intro_container = () => {
   //     fetchSubjects();
   //   }, [subjectId]);
 
-  const [SubjectData1, setSubjectData1] = useState([]);
-  useEffect(() => {
-    const fetchSubjects = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:4009/subjectData/${subjectId}`
-        );
+  // const [SubjectData1, setSubjectData1] = useState([]);
+  // useEffect(() => {
+  //   const fetchSubjects = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         `http://localhost:4009/subjectData1/${subjectId}`
+  //       );
 
-        if (SubjectData) {
-          setSubjectData1(SubjectData);
-        } else {
-          console.error("Invalid data format:", SubjectData);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchSubjects();
-  }, [subjectId]);
+  //       if (SubjectData) {
+  //         setSubjectData1(SubjectData);
+  //       } else {
+  //         console.error("Invalid data format:", SubjectData);
+  //       }
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
+  //   fetchSubjects();
+  // }, [subjectId]);
 
   const [minsubjectid, setminsubjectid] = useState("");
   useEffect(() => {
@@ -240,6 +240,24 @@ export const Intro_container = () => {
     };
 
     fetchSubjects();
+  }, [subjectId]);
+
+
+  const [SectionData, setSectionData] = useState([]);
+  useEffect(() => {
+    const fetchSections = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:4009/fetchSections/${testCreationTableId}/${subjectId}`
+        );
+        const data = await response.json();
+        setSectionData(data);
+        console.log(SectionData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchSections();
   }, [subjectId]);
 
   // for min subjectId
@@ -295,12 +313,12 @@ export const Intro_container = () => {
   }, [courseCreationId]);
   return (
     <>
-      <div>
+      {/* <div>
         
         {SubjectData1.map((data) => (
           <p>{data.subjectName}</p>
         ))}
-      </div>
+      </div> */}
 
       {Intro_content.map((Intro_content, index) => {
         return (
@@ -410,7 +428,7 @@ return(
           className="intro_next_btn"
         >
           NEXT <AiOutlineArrowRight />
-         
+        
         </Link>
 
         {/* <Link

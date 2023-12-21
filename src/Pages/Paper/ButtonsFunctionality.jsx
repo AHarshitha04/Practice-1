@@ -31,6 +31,8 @@ const ButtonsFunctionality = ({
   updateButtonStatus,
   data,
   onSectionButtonClick,
+  currentSectionIndex,
+  sortedSectionsProp, 
 }) => {
   const sections = [
     // Your section data here (adjust based on your actual data structure)
@@ -39,6 +41,7 @@ const ButtonsFunctionality = ({
     { sectionId: 3, sectionName: "Physics", subject: "Physics" },
     { sectionId: 4, sectionName: "Biology", subject: "Biology" },
   ];
+
 
   const renderQuestionButtons = Array.isArray(data.questions)
     ? data.questions.map((question, index) => {
@@ -61,9 +64,10 @@ const ButtonsFunctionality = ({
         return (
           <li key={question}>
             {/* Add your logic for rendering question buttons here */}
+            {/* onSectionButtonClick(); */}
             <button
               onClick={() =>{ handleButtonClick(index + 1);
-                onSectionButtonClick(); }}
+                }}
               className={className}
               // className="right_bar_Buttons"
             >
@@ -73,6 +77,8 @@ const ButtonsFunctionality = ({
         );
       })
     : null;
+
+
 
   const renderSectionButtons = () => {
     // Filter sections based on the selected subject
@@ -102,7 +108,7 @@ const ButtonsFunctionality = ({
   const [isPaused, setIsPaused] = useState(false);
 
   const { subjectId, testCreationTableId } = useParams();
-  let currentSectionIndex = 0;
+  // let currentSectionIndex = 0;
   let currentQuestionCount = 0;
   const [currentSectionName, setCurrentSectionName] = useState("");
   const updateCurrentSection = () => {
@@ -120,7 +126,7 @@ const ButtonsFunctionality = ({
   //working code
   useEffect(() => {
     const fetchData = async () => {
-      let sortedSections = [];
+      // let sortedSections = [];
       try {
 
 
@@ -167,7 +173,7 @@ const ButtonsFunctionality = ({
           currentSectionIndex += 1;
           currentQuestionCount = 0;
           currentSectionName =
-            sortedSections[currentSectionIndex]?.sectionName || "";
+          sortedSectionsProp[currentSectionIndex]?.sectionName || "";
         };
         // Initial display of questions
 
@@ -196,15 +202,41 @@ const ButtonsFunctionality = ({
     };
 
     fetchData();
-  }, [testCreationTableId, subjectId]);
+  }, [testCreationTableId, subjectId,sortedSectionsProp]);
 
   const handleButtonClick = (questionNumber) => {
+
+    console.log("Handle Button Click - Question Number:", questionNumber);
+  console.log("Current Section Index:", currentSectionIndex);
+  console.log("Sorted Sections:", sortedSections);
+  console.log("Question Status:", questionStatus);
+
+
+  //     // Check if questionStatus or sortedSections is undefined or an empty array
+  // if (!questionStatus || !sortedSections || sortedSections.length === 0) {
+  //   console.error("Invalid questionStatus or sortedSections");
+  //   return;
+  // }
+
+  // // Check if the question number is out of bounds
+  // if (questionNumber < 1 || questionNumber > sortedSections[currentSectionIndex].noOfQuestions) {
+  //   console.error("Invalid question number");
+  //   return;
+  // }
+
     // Check if the question is already answered, and return early if true
     if (questionStatus[questionNumber - 1] === "answered") {
       // Navigate to the selected question when it's already answered
       onQuestionSelect(questionNumber);
       return;
     }
+
+
+    // Update active question state
+  setActiveQuestion(questionNumber - 1);
+
+      // Update the current section name
+      setCurrentSectionName(sortedSections[currentSectionIndex]?.sectionName);
 
     onQuestionSelect(questionNumber);
     setAnsweredQuestions((prevAnsweredQuestions) => [
@@ -226,36 +258,16 @@ const ButtonsFunctionality = ({
       // If none of the conditions are met, return the current state
       return prevQuestionStatus;
     });
+    if (
+      currentSectionIndex >= 0 &&
+      currentSectionIndex < sortedSections.length
+    ) {
+      setCurrentSectionName(sortedSections[currentSectionIndex]?.sectionName);
+    }
+    // setCurrentSectionName(
+    //   sortedSectionsProp[currentSectionIndex]?.sectionName || ""
+    // );
 
-
-
-
-    // ------------------------------handleNextClick functionality from paper1 file because to change section name----------------------------------------------
-    // setCurrentQuestionIndex((prevIndex) => {
-    //   if (prevIndex < data.questions.length - 1) {
-    //     const nextIndex = prevIndex + 1;
-    //     return nextIndex;
-    //   } else {
-    //     const currentSectionIndex = data.sections.findIndex(
-    //       (section) => section.questions === data.questions
-    //     );
-  
-    //     const nextSectionIndex =
-    //       currentSectionIndex < data.sections.length - 1
-    //         ? currentSectionIndex + 1
-    //         : currentSectionIndex;
-  
-    //     // Set the current question index to the first question in the next section
-    //     setCurrentQuestionIndex(nextSectionIndex);
-  
-    //     // Update the current section name when moving to the next section
-    //     setCurrentSectionName(sortedSections[nextSectionIndex]?.sectionName || "");
-  
-    //     return nextSectionIndex;
-    //   }
-    // });
-
-    // Add any other logic or state updates you need
   };
 
   ButtonsFunctionality.propTypes = {
@@ -264,6 +276,7 @@ const ButtonsFunctionality = ({
     onResumeTimer: PropTypes.func.isRequired, // Define the prop type for onResumeTimer
     questionData: PropTypes.array.isRequired,
     setQuestionStatus: PropTypes.func.isRequired,
+    sortedSectionsProp: PropTypes.array.isRequired,
     
   };
 
@@ -324,6 +337,10 @@ const ButtonsFunctionality = ({
       minutes > 9 ? minutes : "0" + minutes
     }:${remainingSeconds > 9 ? remainingSeconds : "0" + remainingSeconds}`;
   };
+  const filteredSections = sections.filter(
+    (section) => section.subject === selectedSubject
+);
+
 
 
   return (
@@ -332,17 +349,7 @@ const ButtonsFunctionality = ({
         <p>Name of the person</p>
         <p>Time Left: {WformatTime(wtimer)}</p>
       </div>
-      <div>
-        {/* {Subjects.map((subjectTitle) => (
-          <li key={subjectTitle.subjectId}>
-            <h3
-              
-            >
-              {subjectTitle.subjectName}
-            </h3>
-          </li>
-        ))} */}
-      </div>
+      
       <div className="buttons_container">
         <div className="sidebar-header">
           <p className="header-para">{renderSectionButtons()}</p>
@@ -391,6 +398,7 @@ const ButtonsFunctionality = ({
           </div>
         </div>
       </div>
+      
     </div>
   );
 };

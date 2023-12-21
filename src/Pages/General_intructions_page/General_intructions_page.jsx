@@ -383,7 +383,7 @@ export const General_intructions_page_container = ({ seconds }) => {
   };
 
   const [instructionsData, setInstructionsData] = useState([]);
-  const { testCreationTableId, subjectId } = useParams();
+  const { testCreationTableId, subjectId,sectionId } = useParams();
   console.log("testCreationTableId:", testCreationTableId);
 
   useEffect(() => {
@@ -404,8 +404,8 @@ export const General_intructions_page_container = ({ seconds }) => {
     fetchInstructions();
   }, [testCreationTableId, subjectId]);
 
+  // sectionId
   const [SubjectData, setSubjectData] = useState([]);
-
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
@@ -420,6 +420,23 @@ export const General_intructions_page_container = ({ seconds }) => {
       }
     };
     fetchSubjects();
+  }, [subjectId]);
+
+  const [SectionData, setSectionData] = useState([]);
+  useEffect(() => {
+    const fetchSections = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:4009/fetchSections/${sectionId}`
+        );
+        const data = await response.json();
+        setSectionData(data);
+        console.log(SectionData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchSections();
   }, [subjectId]);
 
 
