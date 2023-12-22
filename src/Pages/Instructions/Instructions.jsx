@@ -186,35 +186,33 @@ export const Intro_container = () => {
 
   //     fetchSubjects();
   //   }, [subjectId]);
-  const [SubjectData1, setSubjectData1] = useState([]);
-  useEffect(() => {
-    const fetchSubjects = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:4009/subjectData/${subjectId}`
-        );
-        // setSubjectData(SubjectData);
-        // const data = await response.json();
-        // setSubjectData(data);
-        // console.log(SubjectData);
-        if (SubjectData) {
-          setSubjectData1(SubjectData);
-        } else {
-          console.error("Invalid data format:", SubjectData);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchSubjects();
-  }, [subjectId]);
+
+  // const [SubjectData1, setSubjectData1] = useState([]);
+  // useEffect(() => {
+  //   const fetchSubjects = async () => {
+  //     try {
+  //       const response = await fetch(
+  //         `http://localhost:4009/subjectData1/${subjectId}`
+  //       );
+
+  //       if (SubjectData) {
+  //         setSubjectData1(SubjectData);
+  //       } else {
+  //         console.error("Invalid data format:", SubjectData);
+  //       }
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
+  //   fetchSubjects();
+  // }, [subjectId]);
 
   const [minsubjectid, setminsubjectid] = useState("");
   useEffect(() => {
     const fetchSubjects = async () => {
       try {
         const response = await fetch(
-          `http://localhost:4009/subjectData/${testCreationTableId}`
+          `http://localhost:4009/subjectData2/${testCreationTableId}`
         );
 
         if (!response.ok) {
@@ -233,7 +231,7 @@ export const Intro_container = () => {
 
           // Log the minimum value to the console
           console.log("Minimum subjectId:", minSubjectId);
-
+          
           setminsubjectid(minSubjectId);
         }
       } catch (error) {
@@ -242,6 +240,24 @@ export const Intro_container = () => {
     };
 
     fetchSubjects();
+  }, [subjectId]);
+
+
+  const [SectionData, setSectionData] = useState([]);
+  useEffect(() => {
+    const fetchSections = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:4009/fetchSections/${testCreationTableId}/${subjectId}`
+        );
+        const data = await response.json();
+        setSectionData(data);
+        console.log(SectionData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchSections();
   }, [subjectId]);
 
   // for min subjectId
@@ -278,17 +294,31 @@ export const Intro_container = () => {
 
   //     fetchSubjects();
   //   }, [subjectId]);
+  const [testData, setTestData] = useState([]);
+  const { courseCreationId } = useParams();
+  useEffect(() => {
+    const fetchTestData = async () => {
+      try {
+        const responseTest = await fetch(
+          `http://localhost:4009/feachingtest/${courseCreationId}`
+        );
+        const testData = await responseTest.json();
+        setTestData(testData);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
+    fetchTestData();
+  }, [courseCreationId]);
   return (
     <>
-    
-      <div>
-        hello
+      {/* <div>
+        
         {SubjectData1.map((data) => (
           <p>{data.subjectName}</p>
         ))}
-      </div>
-
+      </div> */}
 
       {Intro_content.map((Intro_content, index) => {
         return (
@@ -373,13 +403,41 @@ export const Intro_container = () => {
       })}
 
       <div className="intro_next_btn_container">
+        {/* {
+testData.map((test,id)=>{
+return(
+  <div key={id}>
+    {test.testCreationTableId}
+  </div>
+)
+})
+        } */}
+
+        
+        {/* <Link
+         to={`/General_intructions_page/${testCreationTableId}/${minsubjectid}`}
+        
+          className="intro_next_btn"
+        >
+          NEXT <AiOutlineArrowRight />
+          {minsubjectid}
+        </Link> */}
         <Link
+         to={`/General_intructions_page/${testCreationTableId}/${minsubjectid}`}
+        
+          className="intro_next_btn"
+        >
+          NEXT <AiOutlineArrowRight />
+        
+        </Link>
+
+        {/* <Link
           to={`/General_intructions_page/${testCreationTableId}/${minsubjectid}`}
           className="intro_next_btn"
         >
           NEXT <AiOutlineArrowRight />
           {minsubjectid}
-        </Link>
+        </Link> */}
       </div>
     </>
   );

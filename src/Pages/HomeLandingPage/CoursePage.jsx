@@ -165,20 +165,49 @@ const CoursePage = () => {
   const { examId } = useParams();
   const [courseCard, setCourseCard] = useState([]);
 
+  // useEffect(() => {
+  //   const fetchCourseDetails = async () => {
+  //     try {
+  //       const response = await axios.get(`http://localhost:4009/feachingcourse/${examId}`);
+  //       setCourseCard(response.data);
+  //       console.log(examId)
+  //       console.log("API Response:", response.data); // Log the API response
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   };
+
+  //   fetchCourseDetails();
+  // }, [examId]);
+
+  // /Test/count
+  const [noOfTests, setNoOfTests] = useState([]);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
-    const fetchCourseDetails = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:4009/feachingcourse/${examId}`);
-        setCourseCard(response.data);
-        console.log(examId)
-        console.log("API Response:", response.data); // Log the API response
+        const examResponse = await axios.get(`http://localhost:4009/feachingcourse/${examId}`);
+        setCourseCard(examResponse.data);
+
+        const courseResponse = await fetch(
+          "http://localhost:4009/Test/count"
+        );
+        if (!courseResponse.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const courseData = await courseResponse.json();
+        setNoOfTests(courseData);
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchCourseDetails();
+    fetchData();
   }, [examId]);
+  
+
 
   console.log("Exam ID:", examId); // Log the examId
   console.log("Course Card State:", courseCard); // Log the courseCard state
@@ -195,9 +224,18 @@ const CoursePage = () => {
               Validity: ({courseDetails.courseStartDate}) to ({courseDetails.courseEndDate})
             </li>
             <li>Cost: {courseDetails.cost}</li>
-            <li>Discount: {courseDetails.Discount}%</li>
-            <li>Price after discount: {courseDetails.totalPrice}</li>
-            
+            {/* <li>Discount: {courseDetails.Discount}%</li> */}
+            {/* <li>Price after discount: {courseDetails.totalPrice}</li> */}
+            <li>
+                            {noOfTests.map(
+                              (count) =>
+                                count.courseCreationId === courseDetails.courseCreationId && (
+                                  <p key={count.courseCreationId}>
+                                    No of Tests: {count.numberOfTests}
+                                  </p>
+                                )
+                            )}
+                          </li>
             <br />
             <div className="start_now">
               <Link to={`/Test_List/${courseDetails.courseCreationId}`}>Test Page</Link>

@@ -15,7 +15,7 @@ import Payment from './Pages/Payment/Payment'
 import DownloadQuizPage from './Pages/DownloadQuizPage/DownloadQuizPage'
 import CoursePage from './Pages/HomeLandingPage/CoursePage'
 import Document_ImageInfo from './Pages/Paper/Document_ImageInfo';
-
+import TestResultsPage from './Pages/Paper/TestResultsPage';
 
 
 function App() {
@@ -30,7 +30,10 @@ function App() {
         <Route path='/feachingcourse/:examId' element={<CoursePage/>} />
           <Route path='/QuizHome' element={<QuizHome/>}/>
         {/* <Route path='/Paper' element={<Paper />} /> */}
-        <Route path='/subjects/:testCreationTableId/:subjectId'  element={<Paper1 />} />
+        {/* <Route path='/subjects/:testCreationTableId/:subjectId'  element={<Paper1 />} /> */}
+
+        <Route path='/getPaperData/:testCreationTableId/:minsubjectid/'  element={<Paper1 />} />
+
         {/* <Route path='/subjects/:testCreationTableId' element={<Paper1 />} /> */}
 
         {/* <Route path='/quiz_all/:testCreationTableId'  element={<Paper1 />} /> */}
@@ -38,9 +41,11 @@ function App() {
         <Route path={'#'} element={<SubjectTest/>} />
         {/* <Route path='/FullTest/:courseCreationId' element={<FullTest />} /> */}
         <Route path='/Test_List/:courseCreationId' element={<FullTest />} />
-        <Route path='/Instructions/:testCreationTableId/:minSubjectId' element={<Instructions />} />
-        <Route path='/General_intructions_page/:testCreationTableId/:minSubjectId' element={<General_intructions_page />} />
+        {/* <Route path='/Instructions/:testCreationTableId/:minSubjectId' element={<Instructions />} /> */}
+        <Route path='/Instructions/:testCreationTableId/' element={<Instructions />} />
 
+        <Route path='/General_intructions_page/:testCreationTableId/:minSubjectId' element={<General_intructions_page />} />
+        <Route path='/result'  element={<TestResultsPage />} />
         {/* <Route path='/General_intructions_page/:testCreationTableId/:minSubjectId' element={<General_intructions_page/>}/> */}
         {/* <Route path='/DownloadQuizPage' element={<DownloadQuizPage/>} /> */}
         {/* <Route path='/Document_ImageInfo' element={<Document_ImageInfo/>} /> */}
