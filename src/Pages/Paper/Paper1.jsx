@@ -63,15 +63,14 @@ const Paper1 = () => {
     setActiveQuestion(questionNumber - 1);
   };
 
-  // ----------------------ButtonsFunctionality functionalities end-----------------------
-
-  // --------------------------------onclick functionalities--------------------------
-
   //working code
-  const handleSubjectsClick = async (clickedSubjectId) => {
-    setData(null);
-    setCurrentQuestionIndex(0); // Reset current question index
 
+  const handleSubjectsClick = async (clickedSubjectId) => {
+    // setData(null);
+    setCurrentQuestionIndex(0); // Reset current question index
+    setSections([]); // Reset sections when switching subjects
+    setSelectedSubject(clickedSubjectId);
+    console.log(clickedSubjectId);
     // Check if there are selected answers for the current subject
     const selectedAnswersForSubject =
       selectedAnswersMap[clickedSubjectId] || [];
@@ -85,8 +84,18 @@ const Paper1 = () => {
 
       if (subjectsData && subjectsData.questions) {
         setData(subjectsData);
-        setSections(sections);
-        console.log(sections);
+        // setSections(sections);
+        // console.log(sections);
+        setSelectedSubject(clickedSubjectId);
+        setSections(subjectsData.sections); // Assuming sections are present in subjectsData
+        // console.log(subjectsData.sections);
+        setCurrentQuestionIndex(0); // Reset current question index
+
+        // Check if the selected subject is the same as the current subject
+        if (clickedSubjectId !== selectedSubject) {
+          // Redirect only if the subjects are different
+          navigate(`/getPaperData/${testCreationTableId}/${clickedSubjectId}`);
+        }
       } else {
         console.error("Invalid data format:", subjectsData);
       }
@@ -98,9 +107,17 @@ const Paper1 = () => {
   const [setSubjectId] = useState(/* initial value */);
 
   const clearResponse = () => {
-    const updatedSelectedAnswers = [...selectedAnswers];
-    updatedSelectedAnswers[currentQuestionIndex] = "";
-    setSelectedAnswers(updatedSelectedAnswers);
+    // Retrieve questionId after it's declared
+    const questionId = data.questions[currentQuestionIndex].question_id;
+
+    // Create a copy of the selected answers map
+    const updatedSelectedAnswersMap = { ...selectedAnswersMap };
+
+    // Set the answer for the current question to null
+    updatedSelectedAnswersMap[questionId] = null;
+
+    // Update the state with the new selected answers map
+    setSelectedAnswersMap(updatedSelectedAnswersMap);
   };
 
   const handlePreviousClick = () => {
@@ -464,7 +481,7 @@ const Paper1 = () => {
   useEffect(() => {
     const fetchSections = async () => {
       try {
-        if (data && data.questions) {
+        if (selectedSubject && data && data.questions) {
           const qID = data.questions[currentQuestionIndex].question_id;
 
           // Fetch sections for the specified questionId
@@ -494,9 +511,10 @@ const Paper1 = () => {
     };
 
     fetchSections();
-  }, [currentQuestionIndex, data]);
+  }, [currentQuestionIndex, data, selectedSubject, selectedAnswersMap]);
 
   // ---------------------------------Timer code Start--------------------------------
+
   const [timer, setTimer] = useState(0);
   // const [timers, setTimers] = useState(new Array(data.length).fill(0));
   const [timers, setTimers] = useState(Array(data));
@@ -526,16 +544,73 @@ const Paper1 = () => {
   // ------------------------------------Timer code end--------------------------------
 
   //working code
+  //   const onAnswerSelected = (optionIndex) => {
+  //     console.log("selectedSubject:", selectedSubject);
+  //     console.log("currentQuestionIndex:", currentQuestionIndex);
+
+  //     const questionId = data.questions[currentQuestionIndex].question_id;
+
+  //     setSelectedAnswersMap((prevMap) => ({
+  //       ...prevMap,
+  //       [questionId]: optionIndex,
+  //     }));
+
+  //     const updatedSelectedAnswers = {
+  //       ...selectedAnswersMap,
+  //       [data.questions[currentQuestionIndex].question_id]: optionIndex,
+  //     };
+  //   };
+
   const onAnswerSelected = (optionIndex) => {
-    const updatedSelectedAnswers = [...selectedAnswers];
-    updatedSelectedAnswers[currentQuestionIndex] = optionIndex;
-    // Update the selected answers map for the current subject
+    const questionIndex = currentQuestionIndex + 1; // Adding 1 to make it human-readable (1-based index)
+    const subjectIndex =
+      Subjects.findIndex((subject) => subject.subjectId === selectedSubject) +
+      1; // Adding 1 to make it human-readable (1-based index)
+    // const sectionIndex = sections.findIndex(section => section.sectionId === currentQuestionIndex) +1;
+
+    console.log(`Clicked Option Index: ${optionIndex}`);
+    console.log(`Question Index: ${questionIndex}`);
+    console.log(`Subject Index: ${subjectIndex}`);
+    // console.log(`section Index: ${sectionIndex}`);
+
+    const questionId = data.questions[currentQuestionIndex].question_id;
+
     setSelectedAnswersMap((prevMap) => ({
       ...prevMap,
-      [data.subjectId]: updatedSelectedAnswers,
+      [questionId]: optionIndex,
     }));
 
-    setSelectedAnswers(updatedSelectedAnswers);
+    const updatedSelectedAnswers = {
+      ...selectedAnswersMap,
+      [data.questions[currentQuestionIndex].question_id]: optionIndex,
+    };
+
+    // setSelectedAnswersMap((prevMap) => ({
+    //     ...prevMap,
+    //     [questionId]: optionIndex,
+    //   }));
+
+    //   const updatedSelectedAnswers = {
+    //     ...selectedAnswersMap,
+    //     [data.questions[currentQuestionIndex].question_id]: optionIndex,
+    //   };
+
+    // Check if the selected subject is the same as the current subject
+    if (selectedSubject === data.questions[currentQuestionIndex].subject_id) {
+      // Continue with navigation only if the subjects are the same
+      const nextQuestionIndex = currentQuestionIndex + 1;
+      if (nextQuestionIndex < data.questions.length) {
+        setCurrentQuestionIndex(nextQuestionIndex);
+      } else {
+        // Handle reaching the end of questions in the current section or subject
+        console.log("No more questions in the current section or subject");
+      }
+    } else {
+      // Subjects are different, do not navigate to the next question
+      console.log(
+        "Subjects are different, not navigating to the next question"
+      );
+    }
   };
 
   return (
@@ -560,11 +635,18 @@ const Paper1 = () => {
               <div className="single-select-question">
                 <li>
                   {/* {currentSection && <p>Current Section: {currentSection.sectionName}</p>} */}
-                  {sections.map((section) => (
+                  {/* {sections.map((section) => (
                     <li>
                       <p>{section.sectionName}</p>
                     </li>
-                  ))}
+                  ))} */}
+                  {sections &&
+                    sections.map((section) => (
+                      <li key={section.sectionId}>
+                        <p>{section.sectionName}</p>
+                      </li>
+                    ))}
+
                   {/* <p>Current Section: {currentSectionName}</p> */}
                 </li>
               </div>
@@ -587,16 +669,6 @@ const Paper1 = () => {
               </div>
               {/* Map over options for the current question and render them */}
 
-              {/* {
-                data.map((q,i)=>{return(
-                        <>
-                        <p key={i}>{
-                            q.question_id
-                }</p>
-                        </>
-                    )
-                })
-              } */}
               {data.options
                 .filter(
                   (opt) =>
@@ -610,12 +682,16 @@ const Paper1 = () => {
                         type="radio"
                         name={`question-${currentQuestionIndex}-option`}
                         value={optionIndex}
+                        // checked={selectedAnswers[currentQuestionIndex] === optionIndex}
                         checked={
-                          selectedAnswers[currentQuestionIndex] === optionIndex
+                          selectedAnswersMap[
+                            data.questions[currentQuestionIndex].question_id
+                          ] === optionIndex
                         }
                         // onChange={() => onAnswerSelected(subjectIndex, optionIndex)}
                         onChange={() => onAnswerSelected(optionIndex)}
                       />
+
                       <img
                         src={`data:image/png;base64,${option.option_img}`}
                         alt="Option"
