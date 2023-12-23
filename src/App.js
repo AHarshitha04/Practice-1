@@ -3,7 +3,7 @@ import './App.css';
 import HomeLandingPage from './Pages/HomeLandingPage/HomeLandingPage'
 
 import QuizHome from './Pages/QuizHome/QuizHome'
-import Paper1 from './Pages/Paper/Paper1'
+import Practise2 from './Pages/Paper/Practise2'
 // import Paper1 from './Pages/Paper/Paper1'
 import SubjectTest from './Pages/SubjectTest/SubjectTest'
 import FullTest from './Pages/FullTest/FullTest'
@@ -26,29 +26,25 @@ function App() {
     {/* <Instructions/> */}
        <Routes>
         <Route path='/' element={<HomeLandingPage/>}/> 
-        {/* <Route path='/CoursePage/:examId' element={<CoursePage/>} /> */}
+      
         <Route path='/feachingcourse/:examId' element={<CoursePage/>} />
           <Route path='/QuizHome' element={<QuizHome/>}/>
-        {/* <Route path='/Paper' element={<Paper />} /> */}
-        {/* <Route path='/subjects/:testCreationTableId/:subjectId'  element={<Paper1 />} /> */}
+      
 
-        <Route path='/getPaperData/:testCreationTableId/:minsubjectid/'  element={<Paper1 />} />
+        {/* <Route path='/getPaperData/:testCreationTableId/:minsubjectid/'  element={<Paper1 />} /> */}
+        <Route path='/getPaperData/:testCreationTableId/:minsubjectid/'  element={<Practise2 />} />
 
-        {/* <Route path='/subjects/:testCreationTableId' element={<Paper1 />} /> */}
-
-        {/* <Route path='/quiz_all/:testCreationTableId'  element={<Paper1 />} /> */}
+       
         <Route path='/Payment'  element={<Payment />} />
         <Route path={'#'} element={<SubjectTest/>} />
-        {/* <Route path='/FullTest/:courseCreationId' element={<FullTest />} /> */}
+   
         <Route path='/Test_List/:courseCreationId' element={<FullTest />} />
-        {/* <Route path='/Instructions/:testCreationTableId/:minSubjectId' element={<Instructions />} /> */}
+       
         <Route path='/Instructions/:testCreationTableId/' element={<Instructions />} />
 
         <Route path='/General_intructions_page/:testCreationTableId/:minSubjectId' element={<General_intructions_page />} />
         <Route path='/result'  element={<TestResultsPage />} />
-        {/* <Route path='/General_intructions_page/:testCreationTableId/:minSubjectId' element={<General_intructions_page/>}/> */}
-        {/* <Route path='/DownloadQuizPage' element={<DownloadQuizPage/>} /> */}
-        {/* <Route path='/Document_ImageInfo' element={<Document_ImageInfo/>} /> */}
+      
        </Routes>
     </BrowserRouter>
 
@@ -58,7 +54,7 @@ function App() {
 
 
 
-
+// Practise2
 
 
 export default App;

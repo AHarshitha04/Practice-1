@@ -4,9 +4,15 @@ import ButtonsFunctionality from "./ButtonsFunctionality";
 import "./Paper.css";
 import axios from "axios";
 
-const Paper1 = () => {
+const Practise2 = () => {
   const [data, setData] = useState(null);
-  const { subjectId, testCreationTableId, sectionId, questionId } = useParams();
+  const {
+    subjectId,
+    testCreationTableId,
+    sectionId,
+    questionId,
+    quesionTypeId,
+  } = useParams();
   const [Subjects, setSubjects] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [sections, setSections] = useState([]);
@@ -64,6 +70,14 @@ const Paper1 = () => {
   };
 
   //working code
+
+  // if (quesionTypeId == data.currentQuestionIndex) {
+  //   console.log(100);
+  // }
+
+  // if (quesionTypeId != data.currentQuestionIndex) {
+  //   console.log(200);
+  // }
 
   const handleSubjectsClick = async (clickedSubjectId) => {
     // setData(null);
@@ -430,11 +444,37 @@ const Paper1 = () => {
   const [selectedAnswersMap, setSelectedAnswersMap] = useState({});
   const [selectedAnswers, setSelectedAnswers] = useState([]);
 
-
-  
   const [questionType, setQuestionType] = useState([]);
 
   // Fetch question types when the current question index changes
+  //   useEffect(() => {
+  //     const fetchQuestionTypes = async () => {
+  //       try {
+  //         if (data && data.questions) {
+  //           const qID = data.questions[currentQuestionIndex].question_id;
+
+  //           // Fetch question types for the specified questionId
+  //           const responseQuestionTypes = await fetch(
+  //             `http://localhost:4009/questionType/${qID}`
+  //           );
+  //           const questionTypes = await responseQuestionTypes.json();
+  //           setQuestionType(questionTypes);
+
+  //         }
+  // if (questionId.typeofQuestion == "MSQ(Multiple Selection Question)") {
+  //   console.log("helo msq");
+  // } else if (questionId.typeofQuestion == "MCQ(Multiple Choice Question)") {
+  //   console.log("helo mcq");
+  // }
+
+  //       } catch (error) {
+  //         console.error("Error fetching question types:", error);
+  //       }
+  //     };
+
+  //     fetchQuestionTypes();
+  //   }, [currentQuestionIndex, data]);
+
   useEffect(() => {
     const fetchQuestionTypes = async () => {
       try {
@@ -447,15 +487,40 @@ const Paper1 = () => {
           );
           const questionTypes = await responseQuestionTypes.json();
           setQuestionType(questionTypes);
+
+          // Check if the current question is of type "MCQ"
+          const currentQuestionType = questionTypes.find(
+            (q) => q.question_id === qID
+          );
+
+          console.log(currentQuestionType)
+          // console.log("helllo")
+          if (
+            currentQuestionType &&
+            currentQuestionType.typeofQuestion ===
+              "MSQ(Multiple Selection Question)"
+          ) {
+            console.log("Hello MSQ");
+          
+            // Render your MCQ logic here
+          }else if (
+            currentQuestionType &&
+            currentQuestionType.typeofQuestion ===
+              "MCQ(Multiple Choice Question)"
+          ) {
+            console.log("Hello MCQ");
+          }
         }
       } catch (error) {
         console.error("Error fetching question types:", error);
       }
     };
 
-    fetchQuestionTypes();
-  }, [currentQuestionIndex, data]);
 
+
+    
+    fetchQuestionTypes();
+  }, [data, currentQuestionIndex]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -501,10 +566,6 @@ const Paper1 = () => {
     fetchData();
   }, [testCreationTableId, subjectId, selectedAnswersMap]); // data removed from dependencies
 
-
-
-
-
   // Fetch sections when the current question index changes
   useEffect(() => {
     const fetchSections = async () => {
@@ -541,9 +602,6 @@ const Paper1 = () => {
     fetchSections();
   }, [currentQuestionIndex, data, selectedSubject, selectedAnswersMap]);
 
-
-
-  
   // ---------------------------------Timer code Start--------------------------------
 
   const [timer, setTimer] = useState(0);
@@ -615,23 +673,162 @@ const Paper1 = () => {
       ...selectedAnswersMap,
       [data.questions[currentQuestionIndex].question_id]: optionIndex,
     };
-
-   
   };
 
 
 
 
 
+
+
+
+const renderQuestion = () => {
+  console.log("Rendering question...", data, currentQuestionIndex);
+
+  if (data && data.questions && data.questions.length > 0) {
+    const currentQuestion = data.questions[currentQuestionIndex];
+
+    console.log("currentQuestion:", currentQuestion);
+  const currentQuestionType = questionTypes.find(
+            (q) => q.question_id === qID
+          );
+
+
+    if (
+            currentQuestionType &&
+            currentQuestionType.typeofQuestion ===
+              "MSQ(Multiple Selection Question)"
+          ) {
+     
+        return (
+          <div key={currentQuestion.question_id}>
+            <h3>{currentQuestionIndex + 1}.</h3>
+            <img
+              src={`data:image/png;base64,${currentQuestion.question_img}`}
+              alt="Question"
+            />
+            {currentQuestion.options.map((option) => (
+              <label key={option.option_id}>
+                <input
+                  type="radio"
+                  name={`question-${currentQuestionIndex}-option`}
+                  value={option.option_id}
+                  onChange={() => onAnswerSelected(option.option_id)}
+                  checked={
+                    selectedAnswersMap[currentQuestion.question_id] ===
+                    option.option_id
+                  }
+                />
+                <img
+                  src={`data:image/png;base64,${option.option_img}`}
+                  alt="Option"
+                />
+              </label>
+            ))}
+          </div>
+        );}
+
+     else if (
+            currentQuestionType &&
+            currentQuestionType.typeofQuestion ===
+              "MCQ(Multiple Choice Question)"
+          ){// Checkbox pattern for multiple correct options
+        return (
+          <div key={currentQuestion.question_id}>
+            <h3>{currentQuestionIndex + 1}.</h3>
+            <img
+              src={`data:image/png;base64,${currentQuestion.question_img}`}
+              alt="Question"
+            />
+            {currentQuestion.options.map((option) => (
+              <label key={option.option_id}>
+                <input
+                  type="checkbox"
+                  name={`question-${currentQuestionIndex}-option`}
+                  value={option.option_id}
+                  onChange={() => onAnswerSelected(option.option_id)}
+                  checked={selectedAnswersMap[
+                    currentQuestion.question_id
+                  ]?.includes(option.option_id)}
+                />
+                <img
+                  src={`data:image/png;base64,${option.option_img}`}
+                  alt="Option"
+                />
+              </label>
+            ))}
+          </div>
+        );}
+
+     else if (
+            currentQuestionType &&
+            currentQuestionType.typeofQuestion ===
+              "MCQ(Multiple Choice Question)"
+          ){
+        return (
+          <div key={currentQuestion.question_id}>
+            <h3>{currentQuestionIndex + 1}.</h3>
+            <img
+              src={`data:image/png;base64,${currentQuestion.question_img}`}
+              alt="Question"
+            />
+            <input
+              type="text"
+              value={selectedAnswersMap[currentQuestion.question_id] || ""}
+              onChange={(e) => onAnswerSelected(e.target.value)}
+            />
+          </div>
+        );}
+   else if (
+            currentQuestionType &&
+            currentQuestionType.typeofQuestion ===
+              "MCQ(Multiple Choice Question)"
+          ){
+
+        return (
+          <div key={currentQuestion.question_id}>
+            <p>{currentQuestion.question_text}</p>
+            <label>
+              <input
+                type="radio"
+                name={`question-${currentQuestion.question_id}`}
+                value="True"
+                onChange={() => onAnswerSelected("True")}
+                checked={
+                  selectedAnswersMap[currentQuestion.question_id] === "True"
+                }
+              />
+              True
+            </label>
+            <label>
+              <input
+                type="radio"
+                name={`question-${currentQuestion.question_id}`}
+                value="False"
+                onChange={() => onAnswerSelected("False")}
+                checked={
+                  selectedAnswersMap[currentQuestion.question_id] === "False"
+                }
+              />
+              False
+            </label>
+          </div>
+        );
+              }
+
+    
+    
   
-  
-  
-  
+            }}
+
+
+
 
 
 
   return (
     <div>
+   
       <div className="subjects">
         {Subjects.map((subjectTitle) => (
           <li key={subjectTitle.subjectId}>
@@ -657,6 +854,7 @@ const Paper1 = () => {
                       <p>{section.sectionName}</p>
                     </li>
                   ))} */}
+
                   {sections &&
                     sections.map((section) => (
                       <li key={section.sectionId}>
@@ -747,7 +945,8 @@ const Paper1 = () => {
               </button>
             </div>
           </div>
-
+         
+         
           <div className="rightsidebar">
             <ButtonsFunctionality
               onQuestionSelect={handleQuestionSelect}
@@ -767,6 +966,7 @@ const Paper1 = () => {
               Submit
             </button>
           </div>
+      
         </div>
       ) : (
         <p>Loading data...</p>
@@ -775,4 +975,4 @@ const Paper1 = () => {
   );
 };
 
-export default Paper1;
+export default Practise2;
