@@ -208,6 +208,32 @@ app.get('/sections/:questionId', async (req, res) => {
 });
 
 
+
+// SELECT q.question_id, qt.qtypeId, qt.qtype_text FROM questions q JOIN qtype qt ON qt.question_id q.question_id WHERE q.question_id = 26;
+
+
+// SELECT q.question_id, qt.qtypeId, qt.qtype_text, qts.quesionTypeId
+// FROM questions q
+// JOIN qtype qt ON q.question_id = qt.question_id
+// JOIN quesion_type qts ON qt.quesionTypeId = qts.quesionTypeId
+// WHERE q.question_id = 26;
+
+app.get('/questionType/:questionId', async (req, res) => {
+  try {
+    const { questionId } = req.params;
+    const [results] = await db.query(`
+    SELECT q.question_id, qt.qtypeId, qt.qtype_text, qts.typeofQuestion, qts.quesionTypeId FROM questions q JOIN qtype qt ON q.question_id = qt.question_id JOIN quesion_type qts ON qt.quesionTypeId = qts.quesionTypeId WHERE q.question_id = ?;
+    `, [questionId]);
+
+    res.json(results);
+
+  } catch (error) {
+    console.error('Error:', error.message);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
 app.get("/fetchSections/:testCreationTableId/:subjectId", async (req, res) => {
   const { testCreationTableId, subjectId } = req.params;
   try {
