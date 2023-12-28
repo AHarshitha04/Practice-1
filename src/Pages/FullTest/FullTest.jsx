@@ -79,6 +79,27 @@ const FullTest = () => {
     fetchSubjects();
   }, [subjectId]);
 
+  const newWinRef = useRef(null);
+
+  // to={`/Instructions/${test.testCreationTableId}`} 
+
+  const openPopup = () => {
+    newWinRef.current = window.open(
+      `/Instructions/${testData.testCreationTableId}`,
+      '_blank', // Use '_blank' to open in a new window or tab
+      'width=1000,height=1000'
+    );
+
+    document.onmousedown = focusPopup;
+    document.onkeyup = focusPopup;
+    document.onmousemove = focusPopup;
+  };
+
+  const focusPopup = () => {
+    if (newWinRef.current && !newWinRef.current.closed) {
+      newWinRef.current.focus();
+    }
+  };
   return (
     <div>
       <div>
@@ -151,7 +172,10 @@ const FullTest = () => {
               </div>
               <div className="test-contents2">
                 <li>
+                  {/* <Link to={`/Instructions/${test.testCreationTableId}`}  onClick={openPopup}> */}
                   <Link to={`/Instructions/${test.testCreationTableId}`}>
+                  {/* <Link to='#' onClick={openPopup}> */}
+
                     Start Test
                   </Link>
                 </li>
