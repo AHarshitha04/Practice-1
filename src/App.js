@@ -3,10 +3,15 @@ import './App.css';
 import HomeLandingPage from './Pages/HomeLandingPage/HomeLandingPage'
 
 import QuizHome from './Pages/QuizHome/QuizHome'
+<<<<<<< HEAD
 
 import Practise123 from './Pages/Paper/Practise123.jsx'
 
 // import Practise2 from './Pages/Paper/Practise2'
+=======
+// import NewPattern from './Pages/Paper/NewPattern'
+import Practise2 from './Pages/Paper/Practise2'
+>>>>>>> 78f5d8fb8e6933486ac38908a336230ee8cfb455
 // import Paper1 from './Pages/Paper/Paper1'
 import SubjectTest from './Pages/SubjectTest/SubjectTest'
 import FullTest from './Pages/FullTest/FullTest'
@@ -33,19 +38,25 @@ function App() {
         <Route path='/feachingcourse/:examId' element={<CoursePage/>} />
           <Route path='/QuizHome' element={<QuizHome/>}/>
       
-
+        
         {/* <Route path='/getPaperData/:testCreationTableId/:minsubjectid/'  element={<Paper1 />} /> */}
+<<<<<<< HEAD
         {/* <Route path='/getPaperData/:testCreationTableId/:minsubjectid/'  element={<Practise2 />} /> */}
 
         <Route path='/getPaperData/:testCreationTableId/:minsubjectid/'  element={<Practise123/>} />
 
+=======
+        <Route path='/getPaperData/:testCreationTableId/:minsubjectid/'  element={<Practise2 />} />
+        {/* <Route path='/getPaperData/:testCreationTableId'  element={<NewPattern />} /> */}
+       
+>>>>>>> 78f5d8fb8e6933486ac38908a336230ee8cfb455
         <Route path='/Payment'  element={<Payment />} />
         <Route path={'#'} element={<SubjectTest/>} />
    
         <Route path='/Test_List/:courseCreationId' element={<FullTest />} />
        
-        <Route path='/Instructions/:testCreationTableId/' element={<Instructions />} />
-
+        <Route path='/Instructions/:testCreationTableId' element={<Instructions />} />
+        {/* <Route path='/General_intructions_page/:testCreationTableId' element={<General_intructions_page />} /> */}
         <Route path='/General_intructions_page/:testCreationTableId/:minSubjectId' element={<General_intructions_page />} />
         <Route path='/result'  element={<TestResultsPage />} />
       
