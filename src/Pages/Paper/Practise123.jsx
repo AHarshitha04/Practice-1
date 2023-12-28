@@ -4,7 +4,7 @@ import ButtonsFunctionality from "./ButtonsFunctionality";
 import "./Paper.css";
 import axios from "axios";
 
-const Practise2 = () => {
+const Practise123 = () => {
   const [data, setData] = useState(null);
   const {
     subjectId,
@@ -68,6 +68,7 @@ const Practise2 = () => {
     setCurrentQuestionIndex(questionNumber - 1);
     setActiveQuestion(questionNumber - 1);
   };
+  console.log(Subjects.subjectName)
 
   //working code
 
@@ -141,6 +142,7 @@ const Practise2 = () => {
   const handleNextClick = () => {
     setCurrentQuestionIndex((prevIndex) => {
       if (prevIndex < data.questions.length - 1) {
+        console.log(subjectId)
         // If there are more questions in the current section, move to the next question
         return prevIndex + 1;
       }
@@ -474,6 +476,9 @@ const Practise2 = () => {
 
   //     fetchQuestionTypes();
   //   }, [currentQuestionIndex, data]);
+  const [questionTypes] = useState("");
+  const [qID] = useState("");
+
 
   useEffect(() => {
     const fetchQuestionTypes = async () => {
@@ -689,12 +694,10 @@ const renderQuestion = () => {
     const currentQuestion = data.questions[currentQuestionIndex];
 
     console.log("currentQuestion:", currentQuestion);
-  // const currentQuestionType = questionTypes.find(
-  //           (q) => q.question_id === qID
-  //         );
   const currentQuestionType = questionTypes.find(
             (q) => q.question_id === qID
           );
+
 
     if (
             currentQuestionType &&
@@ -977,4 +980,4 @@ const renderQuestion = () => {
   );
 };
 
-export default Practise2;
+export default Practise123;

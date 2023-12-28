@@ -3,7 +3,10 @@ import './App.css';
 import HomeLandingPage from './Pages/HomeLandingPage/HomeLandingPage'
 
 import QuizHome from './Pages/QuizHome/QuizHome'
-import Practise2 from './Pages/Paper/Practise2'
+
+import Practise123 from './Pages/Paper/Practise123.jsx'
+
+// import Practise2 from './Pages/Paper/Practise2'
 // import Paper1 from './Pages/Paper/Paper1'
 import SubjectTest from './Pages/SubjectTest/SubjectTest'
 import FullTest from './Pages/FullTest/FullTest'
@@ -32,9 +35,10 @@ function App() {
       
 
         {/* <Route path='/getPaperData/:testCreationTableId/:minsubjectid/'  element={<Paper1 />} /> */}
-        <Route path='/getPaperData/:testCreationTableId/:minsubjectid/'  element={<Practise2 />} />
+        {/* <Route path='/getPaperData/:testCreationTableId/:minsubjectid/'  element={<Practise2 />} /> */}
 
-       
+        <Route path='/getPaperData/:testCreationTableId/:minsubjectid/'  element={<Practise123/>} />
+
         <Route path='/Payment'  element={<Payment />} />
         <Route path={'#'} element={<SubjectTest/>} />
    

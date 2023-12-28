@@ -18,7 +18,7 @@ const db = mysql.createPool({
   host: "localhost",
   user: "root",
   password: "",
-  database: "admin_project_lap_top",
+  database: "admin_project2",
 });
 
 
@@ -35,6 +35,7 @@ const storage = multer.diskStorage({
     // cb(null, file.originalname);
   },
 });
+
 
 
 
