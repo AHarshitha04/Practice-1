@@ -2171,7 +2171,7 @@ const Practise2 = () => {
         );
         const result = await response.json();
         setData(result);
-
+        console.log("questions");
         // Initialize selected answers based on the saved answers for the current subject
         const selectedAnswersForSubject =
           selectedAnswersMap[defaultSubjectId] || [];
@@ -2372,7 +2372,7 @@ const Practise2 = () => {
             </div>
             <div>
               <div>
-              {/* {(() => {
+                {/* {(() => {
   const qID = data.questions[currentQuestionIndex]?.question_id;
   const currentQuestionType = questionTypes.find((q) => q.question_id === qID);
 
@@ -2396,7 +2396,7 @@ const Practise2 = () => {
   return null;
 })()} */}
 
-{/* {(() => {
+                {/* {(() => {
   const qID = data.questions[currentQuestionIndex]?.question_id;
   const currentQuestionType = questionTypes.find((q) => q.question_id === qID);
 
@@ -2418,40 +2418,69 @@ const Practise2 = () => {
   // Handle other question types here
   return null;
 })()} */}
-
-{/* {(() => {
-   const qID = data.questions[currentQuestionIndex]?.question_id;
-   const currentQuestionType = questionTypes.find((q) => q.question_id === qID);
+{/* 
+                {() => {
+                  const qID = data.questions[currentQuestionIndex]?.question_id;
+                  const currentQuestionType = questionTypes.find(
+                    (q) => q.question_id === qID
+                  );
                   switch (qID.typeofQuestion) {
                     case "MCQ(Multiple Choice Question)":
                       // return <MCQ key={type.quesionTypeId} key={type.questionId} key={type.optionIndex}/>;
-                      return <MCQ key={`${qID.quesionTypeId}-${qID.questionId}-${qID.optionIndex}`} />;
+                      return (
+                        <MCQ
+                          key={`${qID.quesionTypeId}-${qID.questionId}-${qID.optionIndex}`}
+                        />
+                      );
 
-                      case "MSQ(Multiple Selection Question)":
-                      return <MSQ key={`${qID.quesionTypeId}-${qID.questionId}-${qID.optionIndex}`}/>;
+                    case "MSQ(Multiple Selection Question)":
+                      return (
+                        <MSQ
+                          key={`${qID.quesionTypeId}-${qID.questionId}-${qID.optionIndex}`}
+                        />
+                      );
+
                     case "NSQ(Numeric selection Question)":
-                      return <NSQ key={`${qID.quesionTypeId}-${qID.questionId}-${qID.optionIndex}`} />;
+                      return (
+                        <NSQ
+                          key={`${qID.quesionTypeId}-${qID.questionId}-${qID.optionIndex}`}
+                        />
+                      );
+
                     case "True/False Questions":
-                      return <TF key={`${qID.quesionTypeId}-${qID.questionId}-${qID.optionIndex}`} />;
+                      return (
+                        <TF
+                          key={`${qID.quesionTypeId}-${qID.questionId}-${qID.optionIndex}`}
+                        />
+                      );
                     default:
                       return null;
                   }
-                })}  */}
+                }} */}
 
                 {questionType.map((type,data) => {
                   switch (type.typeofQuestion) {
                     case "MCQ(Multiple Choice Question)":
                       // return <MCQ key={type.quesionTypeId} key={type.questionId} key={type.optionIndex}/>;
-                      return <MCQ key={`${type.quesionTypeId}-${data.questionId}-${data.optionIndex} {data.questions.length} `}  />;
-
+                      console.log("before mcq ")
+                      return <MCQ key={`${type.quesionTypeId}-${data.questionId}-${data.optionIndex}`}  />;
+                      console.log("after mcq")
+                     
                       case "MSQ(Multiple Selection Question)":
+                        console.log("before msq now")
                       return <MSQ key={`${type.quesionTypeId}-${data.questionId}-${data.optionIndex}`}/>;
+                        // break;
+                      console.log("after msq")
                     case "NSQ(Numeric selection Question)":
+                      console.log("before nsq")
                       return <NSQ key={`${type.quesionTypeId}-${data.questionId}-${data.optionIndex}`} />;
+
+                      console.log("after nsq")
                     case "True/False Questions":
                       return <TF key={`${type.quesionTypeId}-${data.questionId}-${data.optionIndex}`} />;
                     default:
-                      return null;
+                      // return null;
+                      break;
                   }
                 })}  
               </div>
@@ -2505,11 +2534,14 @@ const Practise2 = () => {
         <p>Loading data...</p>
       )}
     </div>
-
   );
 };
 
 export default Practise2;
+
+
+
+
 
 
 //main
@@ -2645,7 +2677,6 @@ export const MCQ = () => {
       if (prevIndex < data.questions.length - 1) {
         // If there are more questions in the current section, move to the next question
 
-        // console.log("kaka ")
         return prevIndex + 1;
       }
       // console.log("iddkfj")
@@ -4142,15 +4173,6 @@ export const TF = () => {
     </div>
   );
 };
-
-
-
-
-
-
-
-
-
 
 // useEffect(()=> {
 //   const fetchQuestionTypes = async () => {
