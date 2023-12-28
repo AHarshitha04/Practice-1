@@ -1940,7 +1940,7 @@ import "./Paper.css";
 import axios from "axios";
 
 const Practise2 = () => {
-  const [data, setData] = useState(null);
+  const [data1, setData1] = useState(null);
   const {
     subjectId,
     testCreationTableId,
@@ -1955,7 +1955,7 @@ const Practise2 = () => {
   const [currentSection, setCurrentSection] = useState(null);
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [questionStatus, setQuestionStatus] = useState(
-    Array.isArray(data) ? Array(data.questions.length).fill("notAnswered") : []
+    Array.isArray(data1) ? Array(data1.questions.length).fill("notAnswered") : []
   );
 
   // ----------------------------------BUTTON CODE-----------------------------------------------------
@@ -2022,7 +2022,7 @@ const Practise2 = () => {
       const subjectsData = await response.json();
 
       if (subjectsData && subjectsData.questions) {
-        setData(subjectsData);
+        setData1(subjectsData);
         // setSections(sections);
         // console.log(sections);
         setSelectedSubject(clickedSubjectId);
@@ -2047,7 +2047,7 @@ const Practise2 = () => {
 
   const clearResponse = () => {
     // Retrieve questionId after it's declared
-    const questionId = data.questions[currentQuestionIndex].question_id;
+    const questionId = data1.questions[currentQuestionIndex].question_id;
     // Create a copy of the selected answers map
     const updatedSelectedAnswersMap = { ...selectedAnswersMap };
     // Set the answer for the current question to null
@@ -2066,7 +2066,7 @@ const Practise2 = () => {
   const handleNextClick = () => {
     console.log("Before state update", currentQuestionIndex);
     setCurrentQuestionIndex((prevIndex) => {
-      if (prevIndex < data.questions.length - 1) {
+      if (prevIndex < data1.questions.length - 1) {
         // If there are more questions in the current section, move to the next question
         return prevIndex + 1;
       }
@@ -2105,8 +2105,8 @@ const Practise2 = () => {
   useEffect(() => {
     const fetchQuestionTypes = async () => {
       try {
-        if (data && data.questions) {
-          const qID = data.questions[currentQuestionIndex].question_id;
+        if (data1 && data1.questions) {
+          const qID = data1.questions[currentQuestionIndex].question_id;
 
           // Fetch question types for the specified questionId
           const responseQuestionTypes = await fetch(
@@ -2144,7 +2144,7 @@ const Practise2 = () => {
     };
 
     fetchQuestionTypes();
-  }, [data, currentQuestionIndex]);
+  }, [data1, currentQuestionIndex]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -2170,7 +2170,7 @@ const Practise2 = () => {
           `http://localhost:4009/getPaperData/${testCreationTableId}/${defaultSubjectId}`
         );
         const result = await response.json();
-        setData(result);
+        setData1(result);
 
         // Initialize selected answers based on the saved answers for the current subject
         const selectedAnswersForSubject =
@@ -2194,8 +2194,8 @@ const Practise2 = () => {
   useEffect(() => {
     const fetchSections = async () => {
       try {
-        if (selectedSubject && data && data.questions) {
-          const qID = data.questions[currentQuestionIndex].question_id;
+        if (selectedSubject && data1 && data1.questions) {
+          const qID = data1.questions[currentQuestionIndex].question_id;
 
           // Fetch sections for the specified questionId
           const responseSections = await fetch(
@@ -2208,7 +2208,7 @@ const Practise2 = () => {
           const sectionForQuestion = sections.find(
             (section) =>
               section.sectionId ===
-              data.questions[currentQuestionIndex].sectionId
+              data1.questions[currentQuestionIndex].sectionId
           );
 
           // Set the sectionName based on the found section
@@ -2224,13 +2224,13 @@ const Practise2 = () => {
     };
 
     fetchSections();
-  }, [currentQuestionIndex, data, selectedSubject, selectedAnswersMap]);
+  }, [currentQuestionIndex, data1, selectedSubject, selectedAnswersMap]);
 
   // ---------------------------------Timer code Start--------------------------------
 
   const [timer, setTimer] = useState(0);
   // const [timers, setTimers] = useState(new Array(data.length).fill(0));
-  const [timers, setTimers] = useState(Array(data));
+  const [timers, setTimers] = useState(Array(data1));
   const formatTime = (seconds) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
@@ -2286,7 +2286,7 @@ const Practise2 = () => {
     console.log(`Subject Index: ${subjectIndex}`);
     // console.log(`section Index: ${sectionIndex}`);
 
-    const questionId = data.questions[currentQuestionIndex].question_id;
+    const questionId = data1.questions[currentQuestionIndex].question_id;
 
     setSelectedAnswersMap((prevMap) => ({
       ...prevMap,
@@ -2295,7 +2295,7 @@ const Practise2 = () => {
 
     const updatedSelectedAnswers = {
       ...selectedAnswersMap,
-      [data.questions[currentQuestionIndex].question_id]: optionIndex,
+      [data1.questions[currentQuestionIndex].question_id]: optionIndex,
     };
   };
 
@@ -2340,7 +2340,7 @@ const Practise2 = () => {
           </li>
         ))}
       </div>
-      {data !== null && data.questions.length > 0 ? (
+      {data1 !== null && data1.questions.length > 0 ? (
         <div className="qps_button_sections">
           <div className="question_paper_section">
             <div className="second-header">
@@ -2482,7 +2482,7 @@ const Practise2 = () => {
           </div>
 
           <div className="rightsidebar">
-            <ButtonsFunctionality
+            {/* <ButtonsFunctionality
               onQuestionSelect={handleQuestionSelect}
               questionStatus={questionStatus}
               setQuestionStatus={setQuestionStatus}
@@ -2492,10 +2492,10 @@ const Practise2 = () => {
               markedForReviewCount={markedForReviewCount}
               VisitedCount={VisitedCount}
               selectedSubject={selectedSubject}
-              data={data}
+              data={data1}
               //   onSectionButtonClick={handleSectionButtonClick}
               // currentSectionIndex={currentSectionIndex}
-            />
+            /> */}
             <button onClick={handleSubmit} id="resume_btn">
               Submit
             </button>

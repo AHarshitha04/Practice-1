@@ -18,7 +18,7 @@ const db = mysql.createPool({
   host: "localhost",
   user: "root",
   password: "",
-  database: "admin_project_lap_top",
+  database: "admin_project",
 });
 
 
@@ -328,7 +328,6 @@ app.get('/Test/count', async (req, res) => {
 
 
 
-<<<<<<< HEAD
 
 
 
@@ -474,29 +473,6 @@ app.get('/Test/count', async (req, res) => {
 // }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-=======
->>>>>>> bf55cd0ecec0b868ed0892e4cc6fc9d7c6093121
 // //main working code
 app.get("/getPaperData/:testCreationTableId/:subjectId", async (req, res) => {
   try {
