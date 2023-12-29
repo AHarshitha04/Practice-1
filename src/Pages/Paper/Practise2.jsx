@@ -2373,7 +2373,7 @@ const Practise2 = () => {
             <div>
               <div>
               {/* {(() => {
-  const qID = data.questions[currentQuestionIndex]?.question_id;
+  const qID = data1.questions[currentQuestionIndex]?.question_id;
   const currentQuestionType = questionTypes.find((q) => q.question_id === qID);
 
   if (
@@ -2387,7 +2387,7 @@ const Practise2 = () => {
     // return <MCQ key={currentQuestionType.quesionTypeId} optionIndex={data.optionIndex} />;
     console.log("Rendering MSQ component");
     console.log('Question ID:', qID);
-    return <MCQ key={currentQuestionType.quesionTypeId} optionIndex={data.optionIndex} />;
+    return <MCQ key={currentQuestionType.quesionTypeId} optionIndex={data1.optionIndex} />;
 
   }
 
@@ -2397,7 +2397,7 @@ const Practise2 = () => {
 })()} */}
 
 {/* {(() => {
-  const qID = data.questions[currentQuestionIndex]?.question_id;
+  const qID = data1.questions[currentQuestionIndex]?.question_id;
   const currentQuestionType = questionTypes.find((q) => q.question_id === qID);
 
   switch (
@@ -2410,7 +2410,7 @@ const Practise2 = () => {
     console.log('Question ID:', qID);
     // return <MCQ key={currentQuestionType.quesionTypeId} key{{optionIndex} }/>;
 
-    return <MCQ key={currentQuestionType.quesionTypeId} optionIndex={data.optionIndex} />;
+    return <MCQ key={currentQuestionType.quesionTypeId} optionIndex={data1.optionIndex} />;
 
   }
 
@@ -2418,9 +2418,9 @@ const Practise2 = () => {
   // Handle other question types here
   return null;
 })()} */}
-
-{/* {(() => {
-   const qID = data.questions[currentQuestionIndex]?.question_id;
+{/* 
+{(() => {
+   const qID = data1.questions[currentQuestionIndex]?.question_id;
    const currentQuestionType = questionTypes.find((q) => q.question_id === qID);
                   switch (qID.typeofQuestion) {
                     case "MCQ(Multiple Choice Question)":
@@ -2438,18 +2438,18 @@ const Practise2 = () => {
                   }
                 })}  */}
 
-                {questionType.map((type,data) => {
+                {questionType.map((type,data1) => {
                   switch (type.typeofQuestion) {
                     case "MCQ(Multiple Choice Question)":
                       // return <MCQ key={type.quesionTypeId} key={type.questionId} key={type.optionIndex}/>;
-                      return <MCQ key={`${type.quesionTypeId}-${data.questionId}-${data.optionIndex} {data.questions.length} `}  />;
+                      return <MCQ key={`${type.quesionTypeId}-${data1.questionId}-${data1.optionIndex} {data1.questions.length} `}  />;
 
                       case "MSQ(Multiple Selection Question)":
-                      return <MSQ key={`${type.quesionTypeId}-${data.questionId}-${data.optionIndex}`}/>;
+                      return <MSQ key={`${type.quesionTypeId}-${data1.questionId}-${data1.optionIndex}`}/>;
                     case "NSQ(Numeric selection Question)":
-                      return <NSQ key={`${type.quesionTypeId}-${data.questionId}-${data.optionIndex}`} />;
+                      return <NSQ key={`${type.quesionTypeId}-${data1.questionId}-${data1.optionIndex}`} />;
                     case "True/False Questions":
-                      return <TF key={`${type.quesionTypeId}-${data.questionId}-${data.optionIndex}`} />;
+                      return <TF key={`${type.quesionTypeId}-${data1.questionId}-${data1.optionIndex}`} />;
                     default:
                       return null;
                   }
@@ -2515,7 +2515,7 @@ export default Practise2;
 //main
 // MCQ
 export const MCQ = () => {
-  const [data, setData] = useState(null);
+  const [data1, setData1] = useState(null);
   const {
     subjectId,
     testCreationTableId,
@@ -2530,7 +2530,7 @@ export const MCQ = () => {
   const [currentSection, setCurrentSection] = useState(null);
   const [selectedSubject, setSelectedSubject] = useState(null);
   const [questionStatus, setQuestionStatus] = useState(
-    Array.isArray(data) ? Array(data.questions.length).fill("notAnswered") : []
+    Array.isArray(data1) ? Array(data1.questions.length).fill("notAnswered") : []
   );
 
   // ----------------------------------BUTTON CODE-----------------------------------------------------
@@ -2597,7 +2597,7 @@ export const MCQ = () => {
       const subjectsData = await response.json();
 
       if (subjectsData && subjectsData.questions) {
-        setData(subjectsData);
+        setData1(subjectsData);
         // setSections(sections);
         // console.log(sections);
         setSelectedSubject(clickedSubjectId);
@@ -2622,7 +2622,7 @@ export const MCQ = () => {
 
   const clearResponse = () => {
     // Retrieve questionId after it's declared
-    const questionId = data.questions[currentQuestionIndex].question_id;
+    const questionId = data1.questions[currentQuestionIndex].question_id;
     // Create a copy of the selected answers map
     const updatedSelectedAnswersMap = { ...selectedAnswersMap };
     // Set the answer for the current question to null
@@ -2642,7 +2642,7 @@ export const MCQ = () => {
     // console.log('Before state update', currentQuestionIndex);
 
     setCurrentQuestionIndex((prevIndex) => {
-      if (prevIndex < data.questions.length - 1) {
+      if (prevIndex < data1.questions.length - 1) {
         // If there are more questions in the current section, move to the next question
 
         // console.log("kaka ")
@@ -2697,8 +2697,8 @@ export const MCQ = () => {
   useEffect(() => {
     const fetchQuestionTypes = async () => {
       try {
-        if (data && data.questions) {
-          const qID = data.questions[currentQuestionIndex].question_id;
+        if (data1 && data1.questions) {
+          const qID = data1.questions[currentQuestionIndex].question_id;
 
           // Fetch question types for the specified questionId
           const responseQuestionTypes = await fetch(
@@ -2736,7 +2736,7 @@ export const MCQ = () => {
     };
 
     fetchQuestionTypes();
-  }, [data, currentQuestionIndex]);
+  }, [data1, currentQuestionIndex]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -2762,7 +2762,7 @@ export const MCQ = () => {
           `http://localhost:4009/getPaperData/${testCreationTableId}/${defaultSubjectId}`
         );
         const result = await response.json();
-        setData(result);
+        setData1(result);
 
         // Initialize selected answers based on the saved answers for the current subject
         const selectedAnswersForSubject =
@@ -2786,8 +2786,8 @@ export const MCQ = () => {
   useEffect(() => {
     const fetchSections = async () => {
       try {
-        if (selectedSubject && data && data.questions) {
-          const qID = data.questions[currentQuestionIndex].question_id;
+        if (selectedSubject && data1 && data1.questions) {
+          const qID = data1.questions[currentQuestionIndex].question_id;
 
           // Fetch sections for the specified questionId
           const responseSections = await fetch(
@@ -2800,7 +2800,7 @@ export const MCQ = () => {
           const sectionForQuestion = sections.find(
             (section) =>
               section.sectionId ===
-              data.questions[currentQuestionIndex].sectionId
+              data1.questions[currentQuestionIndex].sectionId
           );
 
           // Set the sectionName based on the found section
@@ -2816,13 +2816,13 @@ export const MCQ = () => {
     };
 
     fetchSections();
-  }, [currentQuestionIndex, data, selectedSubject, selectedAnswersMap]);
+  }, [currentQuestionIndex, data1, selectedSubject, selectedAnswersMap]);
 
   // ---------------------------------Timer code Start--------------------------------
 
   const [timer, setTimer] = useState(0);
   // const [timers, setTimers] = useState(new Array(data.length).fill(0));
-  const [timers, setTimers] = useState(Array(data));
+  const [timers, setTimers] = useState(Array(data1));
   const formatTime = (seconds) => {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
@@ -2860,7 +2860,7 @@ export const MCQ = () => {
     console.log(`Subject Index: ${subjectIndex}`);
     // console.log(`section Index: ${sectionIndex}`);
 
-    const questionId = data.questions[currentQuestionIndex].question_id;
+    const questionId = data1.questions[currentQuestionIndex].question_id;
 
     setSelectedAnswersMap((prevMap) => ({
       ...prevMap,
@@ -2869,7 +2869,7 @@ export const MCQ = () => {
 
     const updatedSelectedAnswers = {
       ...selectedAnswersMap,
-      [data.questions[currentQuestionIndex].question_id]: optionIndex,
+      [data1.questions[currentQuestionIndex].question_id]: optionIndex,
     };
   };
 
@@ -2879,7 +2879,7 @@ export const MCQ = () => {
     <div>
       <p>MCQ(Multiple Choice Question)</p>
 
-      {data !== null && data.questions.length > 0 ? (
+      {data1 !== null && data1.questions.length > 0 ? (
         <div className="qps_button_sections">
           <div className="question_paper_section">
             <div className="question_options_container">
@@ -2887,17 +2887,17 @@ export const MCQ = () => {
                 {/* Render the current question based on currentQuestionIndex */}
                 <h3>{currentQuestionIndex + 1}.</h3>
                 <img
-                  src={`data:image/png;base64,${data.questions[currentQuestionIndex].question_img}`}
+                  src={`data:image/png;base64,${data1.questions[currentQuestionIndex].question_img}`}
                   alt="Question"
                 />
               </div>
               {/* Map over options for the current question and render them */}
 
-              {data.options
+              {data1.options
                 .filter(
                   (opt) =>
                     opt.question_id ===
-                    data.questions[currentQuestionIndex].question_id
+                    data1.questions[currentQuestionIndex].question_id
                 )
                 .map((option, optionIndex) => (
                   <div className="option" key={option.option_id}>
@@ -2909,7 +2909,7 @@ export const MCQ = () => {
                         // checked={selectedAnswers[currentQuestionIndex] === optionIndex}
                         checked={
                           selectedAnswersMap[
-                            data.questions[currentQuestionIndex].question_id
+                            data1.questions[currentQuestionIndex].question_id
                           ] === optionIndex
                         }
                         // onChange={() => onAnswerSelected(subjectIndex, optionIndex)}
