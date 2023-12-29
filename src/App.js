@@ -3,7 +3,15 @@ import './App.css';
 import HomeLandingPage from './Pages/HomeLandingPage/HomeLandingPage'
 
 import QuizHome from './Pages/QuizHome/QuizHome'
-import Paper1 from './Pages/Paper/Paper1'
+<<<<<<< HEAD
+
+import Practise123 from './Pages/Paper/Practise123.jsx'
+
+// import Practise2 from './Pages/Paper/Practise2'
+=======
+// import NewPattern from './Pages/Paper/NewPattern'
+import Practise2 from './Pages/Paper/Practise2'
+>>>>>>> 78f5d8fb8e6933486ac38908a336230ee8cfb455
 // import Paper1 from './Pages/Paper/Paper1'
 import SubjectTest from './Pages/SubjectTest/SubjectTest'
 import FullTest from './Pages/FullTest/FullTest'
@@ -15,7 +23,7 @@ import Payment from './Pages/Payment/Payment'
 import DownloadQuizPage from './Pages/DownloadQuizPage/DownloadQuizPage'
 import CoursePage from './Pages/HomeLandingPage/CoursePage'
 import Document_ImageInfo from './Pages/Paper/Document_ImageInfo';
-
+import TestResultsPage from './Pages/Paper/TestResultsPage';
 
 
 function App() {
@@ -26,24 +34,32 @@ function App() {
     {/* <Instructions/> */}
        <Routes>
         <Route path='/' element={<HomeLandingPage/>}/> 
-        {/* <Route path='/CoursePage/:examId' element={<CoursePage/>} /> */}
+      
         <Route path='/feachingcourse/:examId' element={<CoursePage/>} />
           <Route path='/QuizHome' element={<QuizHome/>}/>
-        {/* <Route path='/Paper' element={<Paper />} /> */}
-        <Route path='/subjects/:testCreationTableId/:subjectId'  element={<Paper1 />} />
-        {/* <Route path='/subjects/:testCreationTableId' element={<Paper1 />} /> */}
+      
+        
+        {/* <Route path='/getPaperData/:testCreationTableId/:minsubjectid/'  element={<Paper1 />} /> */}
+<<<<<<< HEAD
+        {/* <Route path='/getPaperData/:testCreationTableId/:minsubjectid/'  element={<Practise2 />} /> */}
 
-        {/* <Route path='/quiz_all/:testCreationTableId'  element={<Paper1 />} /> */}
+        <Route path='/getPaperData/:testCreationTableId/:minsubjectid/'  element={<Practise123/>} />
+
+=======
+        <Route path='/getPaperData/:testCreationTableId/:minsubjectid/'  element={<Practise2 />} />
+        {/* <Route path='/getPaperData/:testCreationTableId'  element={<NewPattern />} /> */}
+       
+>>>>>>> 78f5d8fb8e6933486ac38908a336230ee8cfb455
         <Route path='/Payment'  element={<Payment />} />
         <Route path={'#'} element={<SubjectTest/>} />
-        {/* <Route path='/FullTest/:courseCreationId' element={<FullTest />} /> */}
+   
         <Route path='/Test_List/:courseCreationId' element={<FullTest />} />
-        <Route path='/Instructions/:testCreationTableId/:minSubjectId' element={<Instructions />} />
+       
+        <Route path='/Instructions/:testCreationTableId' element={<Instructions />} />
+        {/* <Route path='/General_intructions_page/:testCreationTableId' element={<General_intructions_page />} /> */}
         <Route path='/General_intructions_page/:testCreationTableId/:minSubjectId' element={<General_intructions_page />} />
-
-        {/* <Route path='/General_intructions_page/:testCreationTableId/:minSubjectId' element={<General_intructions_page/>}/> */}
-        {/* <Route path='/DownloadQuizPage' element={<DownloadQuizPage/>} /> */}
-        {/* <Route path='/Document_ImageInfo' element={<Document_ImageInfo/>} /> */}
+        <Route path='/result'  element={<TestResultsPage />} />
+      
        </Routes>
     </BrowserRouter>
 
@@ -53,7 +69,7 @@ function App() {
 
 
 
-
+// Practise2
 
 
 export default App;

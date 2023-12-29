@@ -480,32 +480,35 @@ export const Quiz_Courses = () => {
 
   // ------------------------exam cards fetching code------------------------------------------
 
+
   const [examCardName, setExamCardName] = useState([]);
+  const [noOfCourses, setNoOfCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:4009/examData`)
-      .then((response) => {
-        setExamCardName(response.data);
-      })
-      .catch((error) => {
+    const fetchData = async () => {
+      try {
+        const examResponse = await axios.get(`http://localhost:4009/examData`);
+        setExamCardName(examResponse.data);
+
+        const courseResponse = await fetch(
+          "http://localhost:4009/courses/count"
+        );
+        if (!courseResponse.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const courseData = await courseResponse.json();
+        setNoOfCourses(courseData);
+      } catch (error) {
         console.error("Error fetching data:", error);
-      });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
-
-  // const [examCardDetails, setExamCardDetails] = useState([]);
-  // const examId = useParams();
-  // useEffect(() => {
-  //   axios
-  //     .get(`http://localhost:4009/feachingcourse/${examId}`)
-  //     .then((response) => {
-  //       setExamCardDetails(response.data);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching data:", error);
-  //     });
-  // }, [examId]);
   // ------------------------exam cards fetching code------------------------------------------
   return (
     <>
@@ -579,9 +582,9 @@ export const Quiz_Courses = () => {
         </div>
 
         {/* <div> */}
-          {/* ------------------------ ug cards----------------------------- */}
+        {/* ------------------------ ug cards----------------------------- */}
 
-          {/* {showcard1 ? (
+        {/* {showcard1 ? (
             <div className="Quiz_cards_cantainer_contain">
               {examsug.map((e) => {
                 return (
@@ -594,9 +597,9 @@ export const Quiz_Courses = () => {
               })}
             </div>
           ) : null} */}
-          {/* ------------------------ pg cards----------------------------- */}
+        {/* ------------------------ pg cards----------------------------- */}
 
-          {/* {showcard2 ? (
+        {/* {showcard2 ? (
             <div className="Quiz_cards_cantainer_contain">
               {examspg.map((e) => {
                 return (
@@ -608,9 +611,9 @@ export const Quiz_Courses = () => {
             </div>
           ) : null} */}
 
-          {/* ------------------------ mba cards----------------------------- */}
+        {/* ------------------------ mba cards----------------------------- */}
 
-          {/* {showcard3 ? (
+        {/* {showcard3 ? (
             <div className="Quiz_cards_cantainer_contain">
               {examsmba.map((e) => {
                 return (
@@ -622,9 +625,9 @@ export const Quiz_Courses = () => {
             </div>
           ) : null} */}
 
-          {/* ------------------------ ca cards----------------------------- */}
+        {/* ------------------------ ca cards----------------------------- */}
 
-          {/* {showcard4 ? (
+        {/* {showcard4 ? (
             <div className="Quiz_cards_cantainer_contain">
               {examsca.map((e) => {
                 return (
@@ -636,6 +639,8 @@ export const Quiz_Courses = () => {
             </div>
           ) : null} */}
         {/* </div> */}
+
+
       </div>
       <div className="CurrentCourses_div">
         <h1>Current Exams</h1>
@@ -644,72 +649,46 @@ export const Quiz_Courses = () => {
           {/* --------------practice-------------------- */}
 
           <div className="first_card">
-            {/* <div className="card">
-              <div className="container">
-                <ul className="card_container_ul">
-                  {examCardDetails.map((cardDetails) => (
-                    <li key={cardDetails.courseCreationId}>
-                      <div>
-                        {examCardName.map((cardItem) => (
-                          <li className="card_name" key={cardItem.examId}>
-                            <h4>{cardItem.examName}</h4>
-                           
-                          </li>
-                        ))}
-                      </div>
-                      <div className="card_container_li">
-                        <img src={iitjee} alt="card" width={350} />
-                        <h4>
-                          <b>{cardDetails.courseName}</b>
-                        </h4>
-                        <br />
-                        <p>
-                          Validity: ({cardDetails.courseStartDate}) to (
-                          {cardDetails.courseEndDate})
-                        </p>
-                        <br />
-                        <div className="start_now">
-                          <Link to={`/FullTest/${cardDetails.courseCreationId}`}>Start Now</Link>
-                        </div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div> */}
             <div className="card">
               <div className="container">
-                {" "}
                 <ul className="card_container_ul">
-                  {examCardName.map((cardItem) => (
-                    <React.Fragment key={cardItem.examId}>
-                      <div className="card_container_li">
-                        <img src={iitjee} alt="card" width={350} />
-                        <h3>{cardItem.examName}</h3>
-                        <li>
-                          {" "}
-                          Validity: ({cardItem.startDate}) to (
-                          {cardItem.endDate})
-                        </li><li><br />
-                      <div className="start_now">
-                          {/* <Link to={`/CoursePage/${cardItem.examId}`}>Start Now </Link */}
-                          <Link to={`/feachingcourse/${cardItem.examId}`}>Start Now </Link>
-                          {/* to={`/CoursePage/${cardItem.examId}`} */}
+                  {loading ? (
+                    <p>Loading...</p>
+                  ) : (
+                    examCardName.map((cardItem) => (
+                      <React.Fragment key={cardItem.examId}>
+                        <div className="card_container_li">
+                          <img src={iitjee} alt="card" width={350} />
+                          <h3>{cardItem.examName}</h3>
+                          <li>
+                            Validity: ({cardItem.startDate}) to (
+                            {cardItem.endDate})
+                          </li>
+                          <li>
+                            {noOfCourses.map(
+                              (count) =>
+                                count.examId === cardItem.examId && (
+                                  <p key={count.examId}>
+                                    No of Courses: {count.numberOfCourses}
+                                  </p>
+                                )
+                            )}
+                          </li>
+                          <li>
+                            <br />
+                            <div className="start_now">
+                              <Link to={`/feachingcourse/${cardItem.examId}`}>
+                                Start Now
+                              </Link>
+                            </div>
+                          </li>
                         </div>
-                        {/* <Link to={`/feachingcourse/${cardItem.examId}`}>
-                          View Courses for {cardItem.examName}
-                        </Link> */}
-                      </li>
-                      </div>
-
-                      
-                    </React.Fragment>
-                  ))}
+                      </React.Fragment>
+                    ))
+                  )}
                 </ul>
               </div>
             </div>
-
-            {/* </ul> */}
           </div>
 
           {/* --------------practice-------------------- */}

@@ -4,10 +4,15 @@ import ButtonsFunctionality from "./ButtonsFunctionality";
 import "./Paper.css";
 import axios from "axios";
 
-
-const Paper1 = () => {
+const Practise123 = () => {
   const [data, setData] = useState(null);
-  const { subjectId, testCreationTableId, sectionId, questionId } = useParams();
+  const {
+    subjectId,
+    testCreationTableId,
+    sectionId,
+    questionId,
+    quesionTypeId,
+  } = useParams();
   const [Subjects, setSubjects] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [sections, setSections] = useState([]);
@@ -18,9 +23,7 @@ const Paper1 = () => {
     Array.isArray(data) ? Array(data.questions.length).fill("notAnswered") : []
   );
 
-
   // ----------------------------------BUTTON CODE-----------------------------------------------------
-
 
   const [answeredCount, setAnsweredCount] = useState(0);
   const [notAnsweredCount, setNotAnsweredCount] = useState(0);
@@ -31,14 +34,12 @@ const Paper1 = () => {
   const navigate = useNavigate();
   const [activeQuestion, setActiveQuestion] = useState(0);
 
-
   const calculateQuestionCounts = () => {
     let answered = 0;
     let notAnswered = 0;
     let markedForReview = 0;
     let answeredmarkedForReviewCount = 0;
     let VisitedCount = 0;
-
 
     questionStatus.forEach((status, index) => {
       if (status === "answered") {
@@ -54,7 +55,6 @@ const Paper1 = () => {
       }
     });
 
-
     return {
       answered,
       notAnswered,
@@ -64,15 +64,21 @@ const Paper1 = () => {
     };
   };
 
-
   const handleQuestionSelect = (questionNumber) => {
     setCurrentQuestionIndex(questionNumber - 1);
     setActiveQuestion(questionNumber - 1);
   };
-
+  console.log(Subjects.subjectName)
 
   //working code
 
+  // if (quesionTypeId == data.currentQuestionIndex) {
+  //   console.log(100);
+  // }
+
+  // if (quesionTypeId != data.currentQuestionIndex) {
+  //   console.log(200);
+  // }
 
   const handleSubjectsClick = async (clickedSubjectId) => {
     // setData(null);
@@ -91,7 +97,6 @@ const Paper1 = () => {
       );
       const subjectsData = await response.json();
 
-
       if (subjectsData && subjectsData.questions) {
         setData(subjectsData);
         // setSections(sections);
@@ -100,7 +105,6 @@ const Paper1 = () => {
         setSections(subjectsData.sections); // Assuming sections are present in subjectsData
         // console.log(subjectsData.sections);
         setCurrentQuestionIndex(0); // Reset current question index
-
 
         // Check if the selected subject is the same as the current subject
         if (clickedSubjectId !== selectedSubject) {
@@ -115,34 +119,18 @@ const Paper1 = () => {
     }
   };
 
-
   const [setSubjectId] = useState(/* initial value */);
-
 
   const clearResponse = () => {
     // Retrieve questionId after it's declared
     const questionId = data.questions[currentQuestionIndex].question_id;
-
     // Create a copy of the selected answers map
     const updatedSelectedAnswersMap = { ...selectedAnswersMap };
     // Set the answer for the current question to null
     updatedSelectedAnswersMap[questionId] = null;
-
-
-
-    // Create a copy of the selected answers map
-    const updatedSelectedAnswersMap = { ...selectedAnswersMap };
-
-
-    // Set the answer for the current question to null
-    updatedSelectedAnswersMap[questionId] = null;
-
-
-
     // Update the state with the new selected answers map
     setSelectedAnswersMap(updatedSelectedAnswersMap);
   };
-
 
   const handlePreviousClick = () => {
     // Update the current question index to move to the previous question
@@ -151,20 +139,18 @@ const Paper1 = () => {
     );
   };
 
-
   const handleNextClick = () => {
     setCurrentQuestionIndex((prevIndex) => {
       if (prevIndex < data.questions.length - 1) {
+        console.log(subjectId)
         // If there are more questions in the current section, move to the next question
         return prevIndex + 1;
       }
     });
   };
 
-
   const handleSubmit = () => {
     window.alert("Your Test has been Submitted!! Click Ok to See Result.");
-
 
     // Call the function to get question counts
     const {
@@ -185,28 +171,22 @@ const Paper1 = () => {
     });
   };
 
-
   //   const fetchSections = async () => {
   //     try {
   //       console.log("Before fetch. testCreationTableId:", testCreationTableId, "subjectId:", data);
-
 
   //       const response = await fetch(
   //         `http://localhost:4009/fetchSections/${testCreationTableId}/${subjectId}`
   //       );
 
-
   //       console.log("After fetch. Response status:", response.status);
-
 
   //       if (!response.ok) {
   //         throw new Error(`HTTP error! Status: ${response.status}`);
   //       }
 
-
   //       const sectionsData = await response.json();
   //       console.log("Sections data:",data);
-
 
   //       setSections(sectionsData);
   //     } catch (error) {
@@ -214,10 +194,8 @@ const Paper1 = () => {
   //     }
   //   };
 
-
   //   fetchSections();
   // }, [testCreationTableId, subjectId]);
-
 
   //   const [currentSection, setCurrentSection] = useState(null);
   //   // const [subjectId, setSubjectId] = useState(initialSubjectId);
@@ -225,7 +203,6 @@ const Paper1 = () => {
   //     const fetchSections = async () => {
   //       try {
   //         console.log("Before fetch. testCreationTableId:", testCreationTableId, "subjectId:", subjectId);
-
 
   //         // Check if subjectId is defined before making the request
   //         if (testCreationTableId && subjectId) {
@@ -235,9 +212,7 @@ const Paper1 = () => {
   //           const sectionsData = await response.json();
   //           console.log("Sections data:", sectionsData);
 
-
   //           setSections(sectionsData)
-
 
   //         } else {
   //           console.error("subjectId is undefined. Unable to make the request.");
@@ -247,20 +222,16 @@ const Paper1 = () => {
   //       }
   //     };
 
-
   // const fetchSections = async () => {
   //   try {
   //     const response = await fetch(
   //       `http://localhost:4009/fetchSections/${testCreationTableId}/${subjectId}`
   //     );
 
-
   // const sectionsData = await response.json();
   // console.log("Sections data:", sectionsData);
 
-
   // setSections(sectionsData);
-
 
   //     // Set the current section based on the question's sectionId
   //     const currentSection = sectionsData.find(
@@ -274,24 +245,19 @@ const Paper1 = () => {
   //     fetchSections();
   //   },[testCreationTableId, subjectId])
 
-
   // const renderSections = () => {
   //   if (sections.length === 0) {
   //     return <p>No sections available.</p>;
   //   }
 
-
   // --------------------------------onclick functionalities end--------------------------
-
 
   // Function to display questions for the current section
   // const displayQuestions = () => {
   //   const currentSection = sortedSections[currentSectionIndex];
 
-
   //   if (currentSection) {
   //     const totalQuestionsInSection = currentSection.noOfQuestions;
-
 
   //     if (currentQuestionCount < totalQuestionsInSection) {
   //       // Set the initial section name if not set
@@ -305,7 +271,6 @@ const Paper1 = () => {
   //         );
   //       }
 
-
   //       setCurrentQuestionCount((prevCount) => prevCount + 1);
   //     } else {
   //       // Move to the next section if available
@@ -313,15 +278,12 @@ const Paper1 = () => {
   //         const nextSectionIndex = currentSectionIndex + 1;
   //         const nextSection = sortedSections[nextSectionIndex];
 
-
   //         console.log("Next Section Index:", nextSectionIndex);
   //         console.log("Next Section Name:", nextSection?.sectionName);
   //         console.log("Next Section ID:", nextSection?.sectionId);
 
-
   //         // setCurrentSectionIndex(nextSectionIndex);
   //         // setCurrentSectionName(nextSection?.sectionName || "");
-
 
   //         // Use setTimeout to ensure that setCurrentSectionIndex is called after the state has been updated
   //         setTimeout(() => {
@@ -331,7 +293,6 @@ const Paper1 = () => {
   //         console.log("No more sections");
   //       }
 
-
   //       setCurrentQuestionCount(1); // Set the current question count to 1 for the next section
   //     }
   //   } else {
@@ -339,7 +300,6 @@ const Paper1 = () => {
   //     console.error("Invalid section or no sections found");
   //   }
   // };
-
 
   // const [sortedSections] = useState("");
   //working code
@@ -356,17 +316,14 @@ const Paper1 = () => {
   //       console.log(subjectsData);
   //       // setSections(sectionsData);
 
-
   //       // Find the least subjectId
   //       const leastSubjectId =
   //         subjectsData.length > 0
   //           ? Math.min(...subjectsData.map((subject) => subject.subjectId))
   //           : null;
 
-
   //       // If subjectId is not provided, set it to the least subjectId
   //       const defaultSubjectId = subjectId || leastSubjectId;
-
 
   //       // Fetch data for the default subject
   //       const response = await fetch(
@@ -375,12 +332,10 @@ const Paper1 = () => {
   //       const result = await response.json();
   //       setData(result);
 
-
   //       // Initialize selected answers based on the saved answers for the current subject
   //       const selectedAnswersForSubject =
   //         selectedAnswersMap[defaultSubjectId] || [];
   //       setSelectedAnswers(selectedAnswersForSubject);
-
 
   //       // Construct the link with the least subjectId
   //       const linkUrl = `/subjects/${testCreationTableId}/${
@@ -388,29 +343,23 @@ const Paper1 = () => {
   //       }`;
   //       // Use linkUrl as needed in your component
 
-
   //       //  ---------------------------------------------------------
-
 
   //       const responseSections = await fetch(
   //         // `http://localhost:4009/fetchSections/${testCreationTableId}/${defaultSubjectId}`
   //         `http://localhost:4009/fetchSections/${testCreationTableId}/${subjectId}`
 
-
   //       );
   //       const sectionsData = await responseSections.json();
   //       console.log("sectionsData:", sectionsData);
-
 
   //     } catch (error) {
   //       console.error("Error fetching data:", error);
   //     }
   //   };
 
-
   //   fetchData();
   // }, [testCreationTableId, subjectId]);
-
 
   //   useEffect(() => {
   //     const fetchData = async () => {
@@ -422,17 +371,14 @@ const Paper1 = () => {
   //             const subjectsData = await responseSubjects.json();
   //             setSubjects(subjectsData);
 
-
   //             // Find the least subjectId
   //             const leastSubjectId =
   //                 subjectsData.length > 0
   //                     ? Math.min(...subjectsData.map((subject) => subject.subjectId))
   //                     : null;
 
-
   //             // If subjectId is not provided, set it to the least subjectId
   //             const defaultSubjectId = subjectId || leastSubjectId;
-
 
   //             // Fetch data for the default subject
   //             const response = await fetch(
@@ -441,17 +387,14 @@ const Paper1 = () => {
   //             const result = await response.json();
   //             setData(result);
 
-
   //             // Initialize selected answers based on the saved answers for the current subject
   //             const selectedAnswersForSubject =
   //                 selectedAnswersMap[defaultSubjectId] || [];
   //             setSelectedAnswers(selectedAnswersForSubject);
 
-
   //             // Construct the link with the least subjectId
   //             const linkUrl = `/subjects/${testCreationTableId}/${subjectId || leastSubjectId}`;
   //             // Use linkUrl as needed in your component
-
 
   //             // Fetch sections for the specified testCreationTableId and subjectId
   //             // const responseSections = await fetch(
@@ -460,31 +403,25 @@ const Paper1 = () => {
   //             // const sectionsData = await responseSections.json();
   //             // // setSections(sectionsData);
 
-
   //             // ------------------------for sections changing-------------
 
-
   //              const qID = data.questions[currentQuestionIndex].question_id;
-
 
   //         // Fetch sections for the specified questionId
   //         const responseSections = await fetch(
   //           // {data.questions[currentQuestionIndex].question_id}
   //           // `http://localhost:4009/sections/${data.questions[currentQuestionIndex].question_id}`
 
-
   //           `http://localhost:4009/sections/${qID}`
   //         );
   //         const sections = await responseSections.json();
   //         setSections(sections);
-
 
   //         // Find the section that corresponds to the current questionId
   //         const sectionForQuestion = sections.find(
   //           (section) =>
   //             section.sectionId === data.questions[currentQuestionIndex].sectionId
   //         );
-
 
   //         // Set the sectionName based on the found section
   //         if (sectionForQuestion) {
@@ -493,30 +430,56 @@ const Paper1 = () => {
   //           setSectionName("Section not found");
   //         }
 
-
   //         // console.log(sectionForQuestion);
   //             // ------------------------for sections changing-------------
-
 
   //         } catch (error) {
   //             console.error("Error fetching data:", error);
   //         }
   //     };
 
-
   //     fetchData();
   // }, [testCreationTableId, subjectId,sectionId,questionId,data]);
 
-
   const [sectionName, setSectionName] = useState("");
-
 
   const [selectedAnswersMap, setSelectedAnswersMap] = useState({});
   const [selectedAnswers, setSelectedAnswers] = useState([]);
-  
+
   const [questionType, setQuestionType] = useState([]);
 
   // Fetch question types when the current question index changes
+  //   useEffect(() => {
+  //     const fetchQuestionTypes = async () => {
+  //       try {
+  //         if (data && data.questions) {
+  //           const qID = data.questions[currentQuestionIndex].question_id;
+
+  //           // Fetch question types for the specified questionId
+  //           const responseQuestionTypes = await fetch(
+  //             `http://localhost:4009/questionType/${qID}`
+  //           );
+  //           const questionTypes = await responseQuestionTypes.json();
+  //           setQuestionType(questionTypes);
+
+  //         }
+  // if (questionId.typeofQuestion == "MSQ(Multiple Selection Question)") {
+  //   console.log("helo msq");
+  // } else if (questionId.typeofQuestion == "MCQ(Multiple Choice Question)") {
+  //   console.log("helo mcq");
+  // }
+
+  //       } catch (error) {
+  //         console.error("Error fetching question types:", error);
+  //       }
+  //     };
+
+  //     fetchQuestionTypes();
+  //   }, [currentQuestionIndex, data]);
+  const [questionTypes] = useState("");
+  const [qID] = useState("");
+
+
   useEffect(() => {
     const fetchQuestionTypes = async () => {
       try {
@@ -529,15 +492,40 @@ const Paper1 = () => {
           );
           const questionTypes = await responseQuestionTypes.json();
           setQuestionType(questionTypes);
+
+          // Check if the current question is of type "MCQ"
+          const currentQuestionType = questionTypes.find(
+            (q) => q.question_id === qID
+          );
+
+          console.log(currentQuestionType)
+          // console.log("helllo")
+          if (
+            currentQuestionType &&
+            currentQuestionType.typeofQuestion ===
+              "MSQ(Multiple Selection Question)"
+          ) {
+            console.log("Hello MSQ");
+          
+            // Render your MCQ logic here
+          }else if (
+            currentQuestionType &&
+            currentQuestionType.typeofQuestion ===
+              "MCQ(Multiple Choice Question)"
+          ) {
+            console.log("Hello MCQ");
+          }
         }
       } catch (error) {
         console.error("Error fetching question types:", error);
       }
     };
 
-    fetchQuestionTypes();
-  }, [currentQuestionIndex, data]);
 
+
+    
+    fetchQuestionTypes();
+  }, [data, currentQuestionIndex]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -549,17 +537,14 @@ const Paper1 = () => {
         const subjectsData = await responseSubjects.json();
         setSubjects(subjectsData);
 
-
         // Find the least subjectId
         const leastSubjectId =
           subjectsData.length > 0
             ? Math.min(...subjectsData.map((subject) => subject.subjectId))
             : null;
 
-
         // If subjectId is not provided, set it to the least subjectId
         const defaultSubjectId = subjectId || leastSubjectId;
-
 
         // Fetch data for the default subject
         const response = await fetch(
@@ -568,12 +553,10 @@ const Paper1 = () => {
         const result = await response.json();
         setData(result);
 
-
         // Initialize selected answers based on the saved answers for the current subject
         const selectedAnswersForSubject =
           selectedAnswersMap[defaultSubjectId] || [];
         setSelectedAnswers(selectedAnswersForSubject);
-
 
         // Construct the link with the least subjectId
         const linkUrl = `/subjects/${testCreationTableId}/${
@@ -585,11 +568,8 @@ const Paper1 = () => {
       }
     };
 
-
     fetchData();
   }, [testCreationTableId, subjectId, selectedAnswersMap]); // data removed from dependencies
-
-
 
   // Fetch sections when the current question index changes
   useEffect(() => {
@@ -598,7 +578,6 @@ const Paper1 = () => {
         if (selectedSubject && data && data.questions) {
           const qID = data.questions[currentQuestionIndex].question_id;
 
-
           // Fetch sections for the specified questionId
           const responseSections = await fetch(
             `http://localhost:4009/sections/${qID}`
@@ -606,14 +585,12 @@ const Paper1 = () => {
           const sections = await responseSections.json();
           setSections(sections);
 
-
           // Find the section that corresponds to the current questionId
           const sectionForQuestion = sections.find(
             (section) =>
               section.sectionId ===
               data.questions[currentQuestionIndex].sectionId
           );
-
 
           // Set the sectionName based on the found section
           if (sectionForQuestion) {
@@ -627,14 +604,10 @@ const Paper1 = () => {
       }
     };
 
-
     fetchSections();
   }, [currentQuestionIndex, data, selectedSubject, selectedAnswersMap]);
 
-
-
   // ---------------------------------Timer code Start--------------------------------
-
 
   const [timer, setTimer] = useState(0);
   // const [timers, setTimers] = useState(new Array(data.length).fill(0));
@@ -647,7 +620,6 @@ const Paper1 = () => {
       minutes > 9 ? minutes : "0" + minutes
     }:${remainingSeconds > 9 ? remainingSeconds : "0" + remainingSeconds}`;
   };
-
 
   //working code
   useEffect(() => {
@@ -663,31 +635,25 @@ const Paper1 = () => {
     };
   }, [currentQuestionIndex, timers]);
 
-
   // ------------------------------------Timer code end--------------------------------
-
 
   //working code
   //   const onAnswerSelected = (optionIndex) => {
   //     console.log("selectedSubject:", selectedSubject);
   //     console.log("currentQuestionIndex:", currentQuestionIndex);
 
-
   //     const questionId = data.questions[currentQuestionIndex].question_id;
-
 
   //     setSelectedAnswersMap((prevMap) => ({
   //       ...prevMap,
   //       [questionId]: optionIndex,
   //     }));
 
-
   //     const updatedSelectedAnswers = {
   //       ...selectedAnswersMap,
   //       [data.questions[currentQuestionIndex].question_id]: optionIndex,
   //     };
   //   };
-
 
   const onAnswerSelected = (optionIndex) => {
     const questionIndex = currentQuestionIndex + 1; // Adding 1 to make it human-readable (1-based index)
@@ -696,67 +662,178 @@ const Paper1 = () => {
       1; // Adding 1 to make it human-readable (1-based index)
     // const sectionIndex = sections.findIndex(section => section.sectionId === currentQuestionIndex) +1;
 
-
     console.log(`Clicked Option Index: ${optionIndex}`);
     console.log(`Question Index: ${questionIndex}`);
     console.log(`Subject Index: ${subjectIndex}`);
     // console.log(`section Index: ${sectionIndex}`);
 
-
     const questionId = data.questions[currentQuestionIndex].question_id;
-
 
     setSelectedAnswersMap((prevMap) => ({
       ...prevMap,
       [questionId]: optionIndex,
     }));
 
-
     const updatedSelectedAnswers = {
       ...selectedAnswersMap,
       [data.questions[currentQuestionIndex].question_id]: optionIndex,
     };
-
-   
   };
 
 
 
 
 
-    // setSelectedAnswersMap((prevMap) => ({
-    //     ...prevMap,
-    //     [questionId]: optionIndex,
-    //   }));
 
 
-    //   const updatedSelectedAnswers = {
-    //     ...selectedAnswersMap,
-    //     [data.questions[currentQuestionIndex].question_id]: optionIndex,
-    //   };
+
+const renderQuestion = () => {
+  console.log("Rendering question...", data, currentQuestionIndex);
+
+  if (data && data.questions && data.questions.length > 0) {
+    const currentQuestion = data.questions[currentQuestionIndex];
+
+    console.log("currentQuestion:", currentQuestion);
+  const currentQuestionType = questionTypes.find(
+            (q) => q.question_id === qID
+          );
 
 
-    // Check if the selected subject is the same as the current subject
-    if (selectedSubject === data.questions[currentQuestionIndex].subject_id) {
-      // Continue with navigation only if the subjects are the same
-      const nextQuestionIndex = currentQuestionIndex + 1;
-      if (nextQuestionIndex < data.questions.length) {
-        setCurrentQuestionIndex(nextQuestionIndex);
-      } else {
-        // Handle reaching the end of questions in the current section or subject
-        console.log("No more questions in the current section or subject");
-      }
-    } else {
-      // Subjects are different, do not navigate to the next question
-      console.log(
-        "Subjects are different, not navigating to the next question"
-      );
-    }
-  };
+    if (
+            currentQuestionType &&
+            currentQuestionType.typeofQuestion ===
+              "MSQ(Multiple Selection Question)"
+          ) {
+     
+        return (
+          <div key={currentQuestion.question_id}>
+            <h3>{currentQuestionIndex + 1}.</h3>
+            <img
+              src={`data:image/png;base64,${currentQuestion.question_img}`}
+              alt="Question"
+            />
+            {currentQuestion.options.map((option) => (
+              <label key={option.option_id}>
+                <input
+                  type="radio"
+                  name={`question-${currentQuestionIndex}-option`}
+                  value={option.option_id}
+                  onChange={() => onAnswerSelected(option.option_id)}
+                  checked={
+                    selectedAnswersMap[currentQuestion.question_id] ===
+                    option.option_id
+                  }
+                />
+                <img
+                  src={`data:image/png;base64,${option.option_img}`}
+                  alt="Option"
+                />
+              </label>
+            ))}
+          </div>
+        );}
+
+     else if (
+            currentQuestionType &&
+            currentQuestionType.typeofQuestion ===
+              "MCQ(Multiple Choice Question)"
+          ){// Checkbox pattern for multiple correct options
+        return (
+          <div key={currentQuestion.question_id}>
+            <h3>{currentQuestionIndex + 1}.</h3>
+            <img
+              src={`data:image/png;base64,${currentQuestion.question_img}`}
+              alt="Question"
+            />
+            {currentQuestion.options.map((option) => (
+              <label key={option.option_id}>
+                <input
+                  type="checkbox"
+                  name={`question-${currentQuestionIndex}-option`}
+                  value={option.option_id}
+                  onChange={() => onAnswerSelected(option.option_id)}
+                  checked={selectedAnswersMap[
+                    currentQuestion.question_id
+                  ]?.includes(option.option_id)}
+                />
+                <img
+                  src={`data:image/png;base64,${option.option_img}`}
+                  alt="Option"
+                />
+              </label>
+            ))}
+          </div>
+        );}
+
+     else if (
+            currentQuestionType &&
+            currentQuestionType.typeofQuestion ===
+              "MCQ(Multiple Choice Question)"
+          ){
+        return (
+          <div key={currentQuestion.question_id}>
+            <h3>{currentQuestionIndex + 1}.</h3>
+            <img
+              src={`data:image/png;base64,${currentQuestion.question_img}`}
+              alt="Question"
+            />
+            <input
+              type="text"
+              value={selectedAnswersMap[currentQuestion.question_id] || ""}
+              onChange={(e) => onAnswerSelected(e.target.value)}
+            />
+          </div>
+        );}
+   else if (
+            currentQuestionType &&
+            currentQuestionType.typeofQuestion ===
+              "MCQ(Multiple Choice Question)"
+          ){
+
+        return (
+          <div key={currentQuestion.question_id}>
+            <p>{currentQuestion.question_text}</p>
+            <label>
+              <input
+                type="radio"
+                name={`question-${currentQuestion.question_id}`}
+                value="True"
+                onChange={() => onAnswerSelected("True")}
+                checked={
+                  selectedAnswersMap[currentQuestion.question_id] === "True"
+                }
+              />
+              True
+            </label>
+            <label>
+              <input
+                type="radio"
+                name={`question-${currentQuestion.question_id}`}
+                value="False"
+                onChange={() => onAnswerSelected("False")}
+                checked={
+                  selectedAnswersMap[currentQuestion.question_id] === "False"
+                }
+              />
+              False
+            </label>
+          </div>
+        );
+              }
+
+    
+    
+  
+            }}
+
+
+
+
 
 
   return (
     <div>
+   
       <div className="subjects">
         {Subjects.map((subjectTitle) => (
           <li key={subjectTitle.subjectId}>
@@ -770,7 +847,6 @@ const Paper1 = () => {
         ))}
       </div>
 
-
       {data !== null && data.questions.length > 0 ? (
         <div className="qps_button_sections">
           <div className="question_paper_section">
@@ -783,6 +859,7 @@ const Paper1 = () => {
                       <p>{section.sectionName}</p>
                     </li>
                   ))} */}
+
                   {sections &&
                     sections.map((section) => (
                       <li key={section.sectionId}>
@@ -790,14 +867,11 @@ const Paper1 = () => {
                       </li>
                     ))}
 
-
                   {questionType.map((type) => (
                     <li key={type.quesionTypeId}>
                       <p>{type.typeofQuestion}</p>
                     </li>
                   ))}
-
-
 
                   {/* <p>Current Section: {currentSectionName}</p> */}
                 </li>
@@ -820,7 +894,6 @@ const Paper1 = () => {
                 />
               </div>
               {/* Map over options for the current question and render them */}
-
 
               {data.options
                 .filter(
@@ -845,7 +918,6 @@ const Paper1 = () => {
                         onChange={() => onAnswerSelected(optionIndex)}
                       />
 
-
                       <img
                         src={`data:image/png;base64,${option.option_img}`}
                         alt="Option"
@@ -854,7 +926,6 @@ const Paper1 = () => {
                   </div>
                 ))}
             </div>
-
 
             <div>
               <button className="clear-btn" onClick={clearResponse}>
@@ -879,8 +950,8 @@ const Paper1 = () => {
               </button>
             </div>
           </div>
-
-
+         
+         
           <div className="rightsidebar">
             <ButtonsFunctionality
               onQuestionSelect={handleQuestionSelect}
@@ -900,6 +971,7 @@ const Paper1 = () => {
               Submit
             </button>
           </div>
+      
         </div>
       ) : (
         <p>Loading data...</p>
@@ -908,5 +980,4 @@ const Paper1 = () => {
   );
 };
 
-
-export default Paper1;
+export default Practise123;
