@@ -328,6 +328,34 @@ export const Quiz_Courses = () => {
   const [coursesmba, setCoursesmba] = useState([]);
   const [coursesca, setCoursesca] = useState([]);
 
+ 
+  
+  // ------------------------exam cards fetching code------------------------------------------
+
+
+  const [examCardName, setExamCardName] = useState([]); // Initialize examCardName state
+  useEffect(() => {
+    axios
+      .get(`http://localhost:4009/examData`)
+      .then((response) => {
+        setExamCardName(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  }, []);
+
+  
+  const currentDate = new Date(); // Get the current date
+
+  // Filter exams based on start and end dates
+  const filteredExams = examCardName.filter(
+    (exam) =>
+      new Date(exam.startDate) <= currentDate && currentDate <= new Date(exam.endDate)
+  );
+
+
+
   useEffect(() => {
     axios
       .get("http://localhost:4009/coursesug")
@@ -478,20 +506,6 @@ export const Quiz_Courses = () => {
     setshowcardactive4(true);
   };
 
-  // ------------------------exam cards fetching code------------------------------------------
-
-  const [examCardName, setExamCardName] = useState([]);
-
-  useEffect(() => {
-    axios
-      .get(`http://localhost:4009/examData`)
-      .then((response) => {
-        setExamCardName(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  }, []);
 
 
   // const [examCardDetails, setExamCardDetails] = useState([]);
@@ -681,7 +695,7 @@ export const Quiz_Courses = () => {
               <div className="container">
                 {" "}
                 <ul className="card_container_ul">
-                  {examCardName.map((cardItem) => (
+                  {filteredExams.map((cardItem) => (
                     <React.Fragment key={cardItem.examId}>
                       <div className="card_container_li">
                         <img src={iitjee} alt="card" width={350} />

@@ -1,5 +1,5 @@
 
-import React, { createContext, useContext,useEffect, useRef, useState } from "react";
+import React, { createContext, useContext,useEffect, useRef, useState,useCallback } from "react";
 import { Link, useParams } from "react-router-dom";
 // import "../RightSidebar/RightSidebar.css";
 
@@ -64,6 +64,7 @@ const ButtonsFunctionality = ({
                 {/* Add your logic for rendering question buttons here */}
                 <button onClick={() => handleButtonClick(index + 1)}
                 className={className}
+                key={question.id}
                 // className="right_bar_Buttons"
                 >
                     {index + 1}
@@ -84,8 +85,8 @@ const ButtonsFunctionality = ({
         console.log("Filtered Sections:", filteredSections);
         console.log("Question Data:", data.questions);
         // Render buttons for filteredSections
-        return filteredSections.map((section, index) => (
-            <li key={index}>
+        return filteredSections.map((section) => (
+            <li key={section.sectionId}>
                 <p className="section-btn" onClick={() => handleButtonClick(section.sectionId)}>
                     You are viewing<span className="subject"> {section.sectionName} </span>Section
                     Question Palette
@@ -103,46 +104,77 @@ const ButtonsFunctionality = ({
     const [isPaused, setIsPaused] = useState(false);
 
 
+
+    // const handleButtonClick =(questionNumber) => {
+    //     const questionIndex = questionNumber - 1;
     
-    const handleButtonClick = (questionNumber) => {
+    //     // Check if the question is already answered
+    //     if (questionStatus[questionIndex] === "answered") {
+    //         // If answered, navigate to the selected question
+    //         onQuestionSelect(questionNumber);
+    //     } else {
+    //         // If not answered, mark it as answered
+    //         setQuestionStatus((prevQuestionStatus) => [
+    //             ...prevQuestionStatus.slice(0, questionIndex),
+    //             "notAnswered",
+    //             ...prevQuestionStatus.slice(questionIndex + 1),
+    //         ]);
     
-            // Check if the question is already answered, and return early if true
-            if (questionStatus[questionNumber - 1] === "answered") {
-                // Navigate to the selected question when it's already answered
+    //         // Update other necessary state or perform additional logic
+    //         onQuestionSelect(questionNumber);
+    //         setAnsweredQuestions((prevAnsweredQuestions) => [...prevAnsweredQuestions, questionNumber]);
+    //         setIsPaused(false);
+    //     }
+    // };
+
+    const handleButtonClick = useCallback((questionNumber) => {
+        
+        const questionIndex = questionNumber - 1;
+    
+            // Check if the question is already answered
+            if (questionStatus[questionIndex] === "answered") {
+                // If answered, navigate to the selected question
                 onQuestionSelect(questionNumber);
-                return;
-              }
-    
-        onQuestionSelect(questionNumber);
-        setAnsweredQuestions((prevAnsweredQuestions) => [...prevAnsweredQuestions, questionNumber]);
-        setIsPaused(false);
-
-    
-        setQuestionStatus((prevQuestionStatus) => {
-            const currentStatus = prevQuestionStatus[questionNumber - 1];
-    
-            if (currentStatus === "notVisited") {
-                return [
-                    ...prevQuestionStatus.slice(0, questionNumber - 1),
+            } else {
+                // If not answered, mark it as answered
+                setQuestionStatus((prevQuestionStatus) => [
+                    ...prevQuestionStatus.slice(0, questionIndex),
                     "notAnswered",
-                    ...prevQuestionStatus.slice(questionNumber),
-                ];
+                    ...prevQuestionStatus.slice(questionIndex + 1),
+                ]);
+        
+                // Update other necessary state or perform additional logic
+                onQuestionSelect(questionNumber);
+                setAnsweredQuestions((prevAnsweredQuestions) => [...prevAnsweredQuestions, questionNumber]);
+                setIsPaused(false);
             }
-            // If none of the conditions are met, return the current state
-            return prevQuestionStatus;
-        });
-    
-        // Add any other logic or state updates you need
-    };
 
+    }, [questionStatus, setQuestionStatus, onQuestionSelect, setAnsweredQuestions, setIsPaused]);
+    
+    
+
+    // ButtonsFunctionality.propTypes = {
+    //     onQuestionSelect: PropTypes.func.isRequired,
+    //     questionStatus: PropTypes.arrayOf(PropTypes.string),
+    //     onResumeTimer: PropTypes.func.isRequired, // Define the prop type for onResumeTimer
+    //     questionData: PropTypes.array.isRequired, 
+    //     setQuestionStatus: PropTypes.func.isRequired,
+    // };
     ButtonsFunctionality.propTypes = {
         onQuestionSelect: PropTypes.func.isRequired,
         questionStatus: PropTypes.arrayOf(PropTypes.string),
-        onResumeTimer: PropTypes.func.isRequired, // Define the prop type for onResumeTimer
-        questionData: PropTypes.array.isRequired, 
+        seconds: PropTypes.number, // Add the appropriate prop type
         setQuestionStatus: PropTypes.func.isRequired,
+        answeredCount: PropTypes.number, // Add the appropriate prop type
+        notAnsweredCount: PropTypes.number, // Add the appropriate prop type
+        answeredmarkedForReviewCount: PropTypes.number, // Add the appropriate prop type
+        markedForReviewCount: PropTypes.number, // Add the appropriate prop type
+        VisitedCount: PropTypes.number, // Add the appropriate prop type
+        selectedSubject: PropTypes.string, // Add the appropriate prop type
+        updateButtonStatus: PropTypes.func, // Add the appropriate prop type
+        data: PropTypes.object, // Add the appropriate prop type
     };
-
+    
 
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [timers, setTimers] = useState(new Array().fill(0));
@@ -151,23 +183,26 @@ const ButtonsFunctionality = ({
     useEffect(() => {
 
 
-
+        console.log("Entering useEffect");
+        console.log("currentQuestionIndex:", currentQuestionIndex);
+        console.log("timers:", timers);
+        console.log("isPaused:", isPaused);
         // Set the timer to the saved value for the current question
-        setTimer(timers[currentQuestionIndex] || 0);
+        // setTimer(timers[currentQuestionIndex] || 0);
+        setTimer((prevTimer) => timers[currentQuestionIndex] || prevTimer);
 
         let interval;
-        // interval = setInterval(() => {
-        //     setTimer(prevTimer => prevTimer + 1);
-        // }, 1000);
 
         if (!isPaused) {
             interval = setInterval(() => {
+                console.log("Updating timer");
                 setTimer((prevTimer) => prevTimer + 1);
             }, 1000);
         }
 
         // Clear the interval when the component unmounts or when the user moves to the next question
         return () => {
+            console.log("Clearing interval");
             clearInterval(interval);
         };
     }, [currentQuestionIndex, timers, isPaused]);

@@ -7977,7 +7977,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import ButtonsFunctionality from "./ButtonsFunctionality";
+
+
+
 const Paper1 = () => {
+  const { answeredQuestions } =useParams
   const [data, setData] = useState(null);
   const { subjectId, testCreationTableId } = useParams();
   const [Subjects, setSubjects] = useState([]);
@@ -7990,6 +7994,7 @@ const Paper1 = () => {
     Array.isArray(data) ? Array(data.questions.length).fill("notAnswered") : []
   );
 
+
   // ----------------------------------BUTTON CODE-----------------------------------------------------
 
   const [answeredCount, setAnsweredCount] = useState(0);
@@ -8001,6 +8006,65 @@ const Paper1 = () => {
 
   const navigate = useNavigate();
   const [activeQuestion, setActiveQuestion] = useState(0);
+
+  const updateCounters = () => {
+    let answered = 0;
+    let notAnswered = 0;
+    let marked = 0;
+    let markedForReview = 0;
+    let Visited = 0;
+
+    questionStatus.forEach((status) => {
+      if (status === "answered") {
+        answered++;
+      } else if (status === "notAnswered") {
+        notAnswered++;
+      } else if (status === "marked") {
+        marked++;
+      } else if (status === "Answered but marked for review") {
+        markedForReview++;
+      } else if (status === "notVisited") {
+        Visited++;
+      }
+    });
+
+    setAnsweredCount(answered);
+    setNotAnsweredCount(notAnswered);
+    setAnsweredmarkedForReviewCount(marked);
+    setMarkedForReviewCount(markedForReview);
+    setVisitedCount(Visited);
+  };
+
+
+  // ---------------------------------Timer code Start--------------------------------
+  const [timer, setTimer] = useState(0);
+  // const [timers, setTimers] = useState(new Array(data.length).fill(0));
+  const [timers, setTimers] = useState(Array(data));
+  const formatTime = (seconds) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const remainingSeconds = seconds % 60;
+    return `${hours > 9 ? hours : "0" + hours}:${minutes > 9 ? minutes : "0" + minutes
+      }:${remainingSeconds > 9 ? remainingSeconds : "0" + remainingSeconds}`;
+  };
+
+  //working code
+  useEffect(() => {
+    // Set the timer to the saved value for the current question
+    setTimer(timers[currentQuestionIndex] || 0);
+    let interval;
+    interval = setInterval(() => {
+      setTimer((prevTimer) => prevTimer + 1);
+    }, 1000);
+    // Clear the interval when the component unmounts or when the user moves to the next question
+    return () => {
+      clearInterval(interval);
+    };
+  }, [currentQuestionIndex, timers]);
+
+  // ------------------------------------Timer code end--------------------------------
+
+
 
   const calculateQuestionCounts = () => {
     let answered = 0;
@@ -8063,20 +8127,7 @@ const Paper1 = () => {
     setActiveQuestion(questionNumber - 1);
   };
 
-  // const { subjectId, testCreationTableId } = useParams();
-  // const [Subjects, setSubjects] = useState([]);
-  // const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
-  // Function to set data in local storage
-  const setLocalStorageData = (key, data) => {
-    localStorage.setItem(key, JSON.stringify(data));
-  };
-
-  // Function to get data from local storage
-  const getLocalStorageData = (key) => {
-    const data = localStorage.getItem(key);
-    return data ? JSON.parse(data) : null;
-  };
 
   // const [selectedAnswersMap, setSelectedAnswersMap] = useState({});
   const [markedQuestions, setMarkedQuestions] = useState([]);
@@ -8121,9 +8172,8 @@ const Paper1 = () => {
         setSelectedAnswers(selectedAnswersForSubject);
 
         // Construct the link with the least subjectId
-        const linkUrl = `/subjects/${testCreationTableId}/${
-          subjectId || leastSubjectId
-        }`;
+        const linkUrl = `/subjects/${testCreationTableId}/${subjectId || leastSubjectId
+          }`;
         // Use linkUrl as needed in your component
 
         //  ---------------------------------------------------------
@@ -8178,40 +8228,13 @@ const Paper1 = () => {
     fetchData();
   }, [testCreationTableId, subjectId]);
 
-  //WORKING CODE FOR ALL SECTIONS TO DISPLAY
-  // const [sections, setSections] = useState([]);
-  // useEffect(() => {
-  //   const fetchSections = async () => {
-  //     try {
-  //       const response = await fetch(
-  //         `http://localhost:4009/fetchSections/${testCreationTableId}`
-  //       );
-  //       const data = await response.json();
-  //       setSections(data);
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   };
 
-  //   fetchSections();
-  // }, [testCreationTableId]);
+  useEffect(() => {
+    // Call the updateCounters function initially when the component mounts
+    updateCounters();
+  }, [questionStatus]);
 
-  // const [sections, setSections] = useState([]);
-  // useEffect(() => {
-  //   const fetchSections = async () => {
-  //     try {
-  //       const response = await fetch(
-  //         `http://localhost:4009/fetchSections/${testCreationTableId}/${defaultSubjectId}`
-  //       );
-  //       const data = await response.json();
-  //       setSections(data);
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   };
 
-  //   fetchSections();
-  // }, [testCreationTableId,subjectId]);
 
   const [selectedAnswersMap, setSelectedAnswersMap] = useState({});
   //working code
@@ -8240,71 +8263,135 @@ const Paper1 = () => {
     }
   };
 
-  //working code
+ 
+
+const markForReview = () => {
+  // Update questionStatus for the marked question
+  const updatedQuestionStatus = [...questionStatus];
+  if (selectedAnswers[activeQuestion]) {
+    updatedQuestionStatus[activeQuestion] = "Answered but marked for review";
+    if (selectedAnswers[activeQuestion] === "Answered but marked for review") {
+      updatedQuestionStatus[activeQuestion] = "Answered but marked for review";
+    }
+  } else if (!selectedAnswers[activeQuestion]) {
+    updatedQuestionStatus[activeQuestion] = "marked";
+  }
+
+  setQuestionStatus(updatedQuestionStatus);
+};
+
+
+const [selectedAnswers, setSelectedAnswers] = useState([]);
+
+const onAnswerSelected = (OptionLetter) => {
+  const updatedSelectedAnswers = [...selectedAnswers];
+  updatedSelectedAnswers[activeQuestion] = OptionLetter;
+  setSelectedAnswers(updatedSelectedAnswers);
+
+  const updatedQuestionStatus = [...questionStatus];
+  updatedQuestionStatus[activeQuestion] = "answered";
+  setQuestionStatus(updatedQuestionStatus);
+};
+
+
+
+const goToPreviousQuestion = () => {
+  setCurrentQuestionIndex((prevIndex) => {
+    // Save the current timer value for the question
+    const updatedTimers = [...timers];
+    updatedTimers[prevIndex] = timer;
+    setTimers(updatedTimers);
+    // Move to the previous question
+    return prevIndex - 1;
+  });
+
+  setActiveQuestion((prevActiveQuestion) => prevActiveQuestion - 1);
+};
+
+
+  
+const clearResponse = () => {
+  // Clear the selected answer
+  const updatedSelectedAnswers = [...selectedAnswers];
+  updatedSelectedAnswers[currentQuestionIndex] = "";
+  setSelectedAnswers(updatedSelectedAnswers);
+
+  // Update the question status to "notAnswered"
+  setQuestionStatus((prevQuestionStatus) => {
+    const currentStatus = prevQuestionStatus[currentQuestionIndex];
+    if (currentStatus === "answered") {
+      return [
+        ...prevQuestionStatus.slice(0, currentQuestionIndex),
+        "notAnswered",
+        ...prevQuestionStatus.slice(currentQuestionIndex + 1),
+      ];
+    }
+    return prevQuestionStatus;
+  });
+};
+
+
+
+  // const handleNextClick = () => {
+
+
+  //   console.log("clicked")
+  //   setCurrentQuestionIndex((prevIndex) => {
+  //     // Save the current timer value for the question
+  //     const updatedTimers = [...timers];
+  //     updatedTimers[prevIndex] = timer;
+  //     setTimers(updatedTimers);
+  //     return prevIndex + 1;
+  //   });
+  
+  //   const updatedQuestionStatus = [...questionStatus];
+  
+  //   if (activeQuestion < data.questions.length - 1) {
+  //     // Check the status of the current question
+  //     const currentQuestionStatus = questionStatus[activeQuestion];
+  
+  //     // Update the status of the current question
+  //     if (currentQuestionStatus === "notAnswered") {
+  //       updatedQuestionStatus[activeQuestion] = "notAnswered";
+  //       console.log("first")
+  //     }
+
+  
+  //     // Check the status of the next question
+  //     const nextQuestionStatus = questionStatus[activeQuestion + 1];
+  
+  //     // Update the status of the next question
+  //     if (nextQuestionStatus === "notVisited") {
+  //       updatedQuestionStatus[activeQuestion + 1] = "notAnswered";
+  //     }
+  
+  //     setActiveQuestion((prevActiveQuestion) => prevActiveQuestion + 1);
+  //   }
+  
+  //   // Update counters and question statuses
+  //   updateCounters();
+  //   setQuestionStatus(updatedQuestionStatus);
+  // };
+
+
   const handleNextClick = () => {
-    // Update the current question index to move to the next question
-    setCurrentQuestionIndex((prevIndex) =>
-      prevIndex < data.questions.length - 1 ? prevIndex + 1 : prevIndex
-    );
+    setCurrentQuestionIndex((prevIndex) => {
+      // Save the current timer value for the question
+      const updatedTimers = [...timers];
+      updatedTimers[prevIndex] = timer;
+      setTimers(updatedTimers);
+      return prevIndex + 1;
+    });
+    updateCounters();
   };
+  
+  
 
-  const handlePreviousClick = () => {
-    // Update the current question index to move to the previous question
-    setCurrentQuestionIndex((prevIndex) =>
-      prevIndex > 0 ? prevIndex - 1 : prevIndex
-    );
-  };
 
-  const clearResponse = () => {
-    const updatedSelectedAnswers = [...selectedAnswers];
-    updatedSelectedAnswers[currentQuestionIndex] = "";
-    setSelectedAnswers(updatedSelectedAnswers);
-  };
 
-  // ---------------------------------Timer code Start--------------------------------
-  const [timer, setTimer] = useState(0);
-  // const [timers, setTimers] = useState(new Array(data.length).fill(0));
-  const [timers, setTimers] = useState(Array(data));
-  const formatTime = (seconds) => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = seconds % 60;
-    return `${hours > 9 ? hours : "0" + hours}:${
-      minutes > 9 ? minutes : "0" + minutes
-    }:${remainingSeconds > 9 ? remainingSeconds : "0" + remainingSeconds}`;
-  };
 
-  //working code
-  useEffect(() => {
-    // Set the timer to the saved value for the current question
-    setTimer(timers[currentQuestionIndex] || 0);
-    let interval;
-    interval = setInterval(() => {
-      setTimer((prevTimer) => prevTimer + 1);
-    }, 1000);
-    // Clear the interval when the component unmounts or when the user moves to the next question
-    return () => {
-      clearInterval(interval);
-    };
-  }, [currentQuestionIndex, timers]);
 
-  // ------------------------------------Timer code end--------------------------------
 
-  const [selectedAnswers, setSelectedAnswers] = useState([]);
-
-  //working code
-  const onAnswerSelected = (optionIndex) => {
-    const updatedSelectedAnswers = [...selectedAnswers];
-    updatedSelectedAnswers[currentQuestionIndex] = optionIndex;
-
-    // Update the selected answers map for the current subject
-    setSelectedAnswersMap((prevMap) => ({
-      ...prevMap,
-      [data.subjectId]: updatedSelectedAnswers,
-    }));
-
-    setSelectedAnswers(updatedSelectedAnswers);
-  };
 
   return (
     <div>
@@ -8315,7 +8402,6 @@ const Paper1 = () => {
               onClick={() => handleSubjectsClick(subjectTitle.subjectId)}
               className="subject-btn"
             >
-              {/* {subjectTitle.subjectId[0]} */}
               {subjectTitle.subjectName}
             </button>
           </li>
@@ -8323,13 +8409,6 @@ const Paper1 = () => {
       </div>
 
       <div className="second-header">
-        {/* <div className="single-select-question">
-          {sections.map((sectionTitle, index) => (
-            <li key={index}>
-              <p>{sectionTitle.sectionName}</p>
-            </li>
-          ))}
-        </div> */}
 
         <div className="right-header">
           <div className="marks">
@@ -8386,12 +8465,15 @@ const Paper1 = () => {
               ))}
 
             <div>
+              <button className="clear-btn" onClick={markForReview}>
+                Mark for Review & Next
+              </button>
               <button className="clear-btn" onClick={clearResponse}>
                 Clear Response
               </button>
               <button
                 className="previous-btn"
-                onClick={handlePreviousClick}
+                onClick={goToPreviousQuestion}
                 disabled={currentQuestionIndex === 0}
               >
                 <i className="fa-solid fa-angles-left"></i> Previous

@@ -32,6 +32,8 @@ const FullTest = () => {
     fetchTestData();
   }, [courseCreationId]);
 
+  
+
   const handleTypeOfTestClick = async (typeOfTestId) => {
     try {
       // Fetch tests based on both courseCreationId and typeOfTestId
@@ -80,6 +82,14 @@ const FullTest = () => {
 
     fetchSubjects();
   }, [subjectId]);
+
+  const currentDate = new Date(); // Get the current date
+
+    // Filter exams based on start and end dates
+    const filteredTests = testData.filter(
+      (type) =>
+        new Date(type.testStartDate) <= currentDate && currentDate <= new Date(type.testEndDate)
+    );
  
 
 
@@ -144,7 +154,12 @@ const FullTest = () => {
         </div>
       </ul>
       <ul>
-        {testData.map((test) => (
+      {filteredTests.map((test) => {
+
+        // Check if the current date is between start and end dates
+        const isActive = test.status === 'active';
+
+        return (
           <div className="test-card" key={test.testCreationTableId}>
             <li>
               <p className="test-card-header">
@@ -159,30 +174,18 @@ const FullTest = () => {
               </div>
               <div className="test-contents2">
                 <li>
-                  <Link
-                    // to={`/Instructions/${test.testCreationTableId}/${SubjectData.minSubjectId}`}
-                    to={`/Instructions/${test.testCreationTableId}/`}
-
-                  >
-                    Start Test
-                  </Link>
-                  {/* <Link
-                    to={`/Instructions/${test.testCreationTableId}/${SubjectData.minSubjectId}`}
-                  >
-                    Start Test
-                  </Link> */}
-
-                  {/* <Link 
-                    to={`/Instructions/${test.testCreationTableId}/${minsubjectid}`}
-                  >
-                    Start Test
-                  </Link> */}
+                  {isActive ? (
+                    <Link to={`/Instructions/${test.testCreationTableId}`}>Start Test</Link>
+                  ) : (
+                    <span>Test will start soon</span>
+                  )}
                 </li>
               </div>
             </li>
           </div>
-        ))}
-      </ul>
+        );
+      })}
+    </ul>
     </div>
   );
 };

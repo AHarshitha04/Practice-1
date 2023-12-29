@@ -180,6 +180,14 @@ const CoursePage = () => {
     fetchCourseDetails();
   }, [examId]);
 
+  const currentDate = new Date(); // Get the current date
+
+  // Filter exams based on start and end dates
+  const filteredCourses = courseCard.filter(
+    (courseDetails) =>
+      new Date(courseDetails.courseStartDate) <= currentDate && currentDate <= new Date(courseDetails.courseEndDate)
+  );
+
   console.log("Exam ID:", examId); // Log the examId
   console.log("Course Card State:", courseCard); // Log the courseCard state
 
@@ -187,7 +195,7 @@ const CoursePage = () => {
     <div>
       <h1>Current Courses</h1>
       <ul className="card_container_ul">
-        {courseCard.map((courseDetails) => (
+        {filteredCourses.map((courseDetails) => (
           <div key={courseDetails.courseCreationId} className="card_container_li">
             <img src={MockTest} alt="card" width={350} />
             <li><h3>{courseDetails.courseName}</h3></li>
@@ -210,3 +218,10 @@ const CoursePage = () => {
 };
 
 export default CoursePage;
+
+
+
+
+
+
+
