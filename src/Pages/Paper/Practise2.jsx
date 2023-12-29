@@ -2225,7 +2225,7 @@ const Practise2 = () => {
 
     fetchSections();
   }, [currentQuestionIndex, data, selectedSubject, selectedAnswersMap]);
-
+  const [qID] = useState("");
   // ---------------------------------Timer code Start--------------------------------
 
   const [timer, setTimer] = useState(0);
@@ -2239,7 +2239,6 @@ const Practise2 = () => {
       minutes > 9 ? minutes : "0" + minutes
     }:${remainingSeconds > 9 ? remainingSeconds : "0" + remainingSeconds}`;
   };
-
   //working code
   useEffect(() => {
     // Set the timer to the saved value for the current question
@@ -2299,7 +2298,7 @@ const Practise2 = () => {
     };
   };
 
-<<<<<<< HEAD
+
 
 
 
@@ -2452,9 +2451,8 @@ const renderQuestion = () => {
 
 
 
-=======
   const [questionTypes, setquestionTypes] = useState([]);
->>>>>>> 78f5d8fb8e6933486ac38908a336230ee8cfb455
+
 
   return (
     <div>
