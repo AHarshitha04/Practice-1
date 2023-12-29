@@ -2299,12 +2299,6 @@ const Practise2 = () => {
     };
   };
 
-<<<<<<< HEAD
-
-
-
-
-
 
 
 const renderQuestion = () => {
@@ -2452,9 +2446,6 @@ const renderQuestion = () => {
 
 
 
-=======
-  const [questionTypes, setquestionTypes] = useState([]);
->>>>>>> 78f5d8fb8e6933486ac38908a336230ee8cfb455
 
   return (
     <div>
