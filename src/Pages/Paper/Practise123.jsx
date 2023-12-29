@@ -2918,6 +2918,9 @@
 // //   ))}
 // // </div>
 
+
+
+
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import ButtonsFunctionality from "./ButtonsFunctionality";
@@ -2939,9 +2942,14 @@ const Practise123 = () => {
   const [currentSectionName, setCurrentSectionName] = useState("");
   const [currentSection, setCurrentSection] = useState(null);
   const [selectedSubject, setSelectedSubject] = useState(null);
+  // const [questionStatus, setQuestionStatus] = useState(
+  //   Array.isArray(data) ? Array(data.questions.length).fill("notAnswered") : []
+  // );
+
   const [questionStatus, setQuestionStatus] = useState(
     Array.isArray(data) ? Array(data.questions.length).fill("notAnswered") : []
   );
+
 
   // ----------------------------------BUTTON CODE-----------------------------------------------------
 
@@ -3133,51 +3141,97 @@ console.log(data.questions.length )
     fetchQuestionTypes();
   }, [data, currentQuestionIndex]);
 
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       // Fetch all subjects
+  //       const responseSubjects = await fetch(
+  //         `http://localhost:4009/subjects/${testCreationTableId}`
+  //       );
+  //       const subjectsData = await responseSubjects.json();
+  //       setSubjects(subjectsData);
+
+  //       // Find the least subjectId
+  //       const leastSubjectId =
+  //         subjectsData.length > 0
+  //           ? Math.min(...subjectsData.map((subject) => subject.subjectId))
+  //           : null;
+
+  //       // If subjectId is not provided, set it to the least subjectId
+  //       const defaultSubjectId = subjectId || leastSubjectId;
+
+  //       // Fetch data for the default subject
+  //       const response = await fetch(
+  //         `http://localhost:4009/getPaperData/${testCreationTableId}/${defaultSubjectId}`
+  //       );
+  //       const result = await response.json();
+  //       setData(result);
+    
+  //       // Initialize selected answers based on the saved answers for the current subject
+  //       const selectedAnswersForSubject =
+  //         selectedAnswersMap[defaultSubjectId] || [];
+  //       setSelectedAnswers(selectedAnswersForSubject);
+
+  //       // Construct the link with the least subjectId
+  //       const linkUrl = `/subjects/${testCreationTableId}/${
+  //         subjectId || leastSubjectId
+  //       }`;
+  //       // Use linkUrl as needed in your component
+  //     }
+  //      catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   };
+
+  //   fetchData();
+  // },
+  
+  // [testCreationTableId, subjectId, selectedAnswersMap]); // data removed from dependencies
+
+  // Fetch sections when the current question index changes
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch all subjects
+        if (!testCreationTableId || (!subjectId && !selectedAnswersMap)) {
+          return; // Prevent fetching if essential IDs are not available
+        }
+  
         const responseSubjects = await fetch(
           `http://localhost:4009/subjects/${testCreationTableId}`
         );
         const subjectsData = await responseSubjects.json();
         setSubjects(subjectsData);
-
-        // Find the least subjectId
+  
         const leastSubjectId =
           subjectsData.length > 0
             ? Math.min(...subjectsData.map((subject) => subject.subjectId))
             : null;
-
-        // If subjectId is not provided, set it to the least subjectId
+  
         const defaultSubjectId = subjectId || leastSubjectId;
-
-        // Fetch data for the default subject
+  
         const response = await fetch(
           `http://localhost:4009/getPaperData/${testCreationTableId}/${defaultSubjectId}`
         );
         const result = await response.json();
         setData(result);
-    
-        // Initialize selected answers based on the saved answers for the current subject
+  
         const selectedAnswersForSubject =
           selectedAnswersMap[defaultSubjectId] || [];
         setSelectedAnswers(selectedAnswersForSubject);
-
-        // Construct the link with the least subjectId
-        const linkUrl = `/subjects/${testCreationTableId}/${
-          subjectId || leastSubjectId
-        }`;
+  
+        const linkUrl = `/subjects/${testCreationTableId}/${subjectId || leastSubjectId}`;
         // Use linkUrl as needed in your component
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
-
+  
     fetchData();
-  }, [testCreationTableId, subjectId, selectedAnswersMap]); // data removed from dependencies
+  }, [testCreationTableId, subjectId, selectedAnswersMap]);
+  
+  
 
-  // Fetch sections when the current question index changes
   useEffect(() => {
     const fetchSections = async () => {
       try {
@@ -3290,30 +3344,7 @@ console.log(data.questions.length )
 
   return (
     <div>
-      {/* {typeofQuestion === "MCQ(Multiple Choice Question)" &&(
-        (
-          <>
 
-          <p>hello mcq</p>
-          </>
-        )
-      )} */}
-      {/* <>
-        {questionType.map((type) => {
-          switch (type.typeofQuestion) {
-            case "MCQ(Multiple Choice Question)":
-              return <MCQ key={type.quesionTypeId} />;
-            case "MSQ(Multiple Selection Question)":
-              return <MSQ key={type.quesionTypeId} />;
-            case "NSQ(Numerical Solution Question)":
-              return <NSQ key={type.quesionTypeId} />;
-            case "TF(True/False Question)":
-              return <TF key={type.quesionTypeId} />;
-            default:
-              return null;
-          }
-        })}
-      </> */}
 
       <div className="subjects">
         {Subjects.map((subjectTitle) => (
@@ -3359,91 +3390,7 @@ console.log(data.questions.length )
             </div>
             <div>
               <div>
-                {/* {(() => {
-  const qID = data.questions[currentQuestionIndex]?.question_id;
-  const currentQuestionType = questionTypes.find((q) => q.question_id === qID);
-
-  if (
-    currentQuestionType &&
-    currentQuestionType.typeofQuestion === "MSQ(Multiple Selection Question)"
-  ) {
-    // console.log("Rendering MSQ component");
-    // console.log('Question ID:', qID);
-    // // return <MCQ key={currentQuestionType.quesionTypeId} key{{optionIndex} }/>;
-
-    // return <MCQ key={currentQuestionType.quesionTypeId} optionIndex={data.optionIndex} />;
-    console.log("Rendering MSQ component");
-    console.log('Question ID:', qID);
-    return <MCQ key={currentQuestionType.quesionTypeId} optionIndex={data.optionIndex} />;
-
-  }
-
-  console.log("Not rendering MSQ component");
-  // Handle other question types here
-  return null;
-})()} */}
-
-                {/* {(() => {
-  const qID = data.questions[currentQuestionIndex]?.question_id;
-  const currentQuestionType = questionTypes.find((q) => q.question_id === qID);
-
-  switch (
-    currentQuestionType &&
-    currentQuestionType.typeofQuestion === "MSQ(Multiple Selection Question)"
-  ) {
-    case "MCQ(Multiple Choice Question)":
-      // return
-    console.log("Rendering MSQ component");
-    console.log('Question ID:', qID);
-    // return <MCQ key={currentQuestionType.quesionTypeId} key{{optionIndex} }/>;
-
-    return <MCQ key={currentQuestionType.quesionTypeId} optionIndex={data.optionIndex} />;
-
-  }
-
-  console.log("Not rendering MSQ component");
-  // Handle other question types here
-  return null;
-})()} */}
-{/* 
-                {() => {
-                  const qID = data.questions[currentQuestionIndex]?.question_id;
-                  const currentQuestionType = questionTypes.find(
-                    (q) => q.question_id === qID
-                  );
-                  switch (qID.typeofQuestion) {
-                    case "MCQ(Multiple Choice Question)":
-                      // return <MCQ key={type.quesionTypeId} key={type.questionId} key={type.optionIndex}/>;
-                      return (
-                        <MCQ
-                          key={`${qID.quesionTypeId}-${qID.questionId}-${qID.optionIndex}`}
-                        />
-                      );
-
-                    case "MSQ(Multiple Selection Question)":
-                      return (
-                        <MSQ
-                          key={`${qID.quesionTypeId}-${qID.questionId}-${qID.optionIndex}`}
-                        />
-                      );
-
-                    case "NSQ(Numeric selection Question)":
-                      return (
-                        <NSQ
-                          key={`${qID.quesionTypeId}-${qID.questionId}-${qID.optionIndex}`}
-                        />
-                      );
-
-                    case "True/False Questions":
-                      return (
-                        <TF
-                          key={`${qID.quesionTypeId}-${qID.questionId}-${qID.optionIndex}`}
-                        />
-                      );
-                    default:
-                      return null;
-                  }
-                }} */}
+          
 
                 {questionType.map((type,data) => {
                   switch (type.typeofQuestion) {
@@ -3509,7 +3456,7 @@ console.log(data.questions.length )
               VisitedCount={VisitedCount}
               selectedSubject={selectedSubject}
               data={data}
-              //   onSectionButtonClick={handleSectionButtonClick}
+                // onSectionButtonClick={handleSectionButtonClick}
               // currentSectionIndex={currentSectionIndex}
             />
             <button onClick={handleSubmit} id="resume_btn">

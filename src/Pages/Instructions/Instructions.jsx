@@ -423,8 +423,8 @@ return(
           {minsubjectid}
         </Link> */}
         <Link
-         to={`/General_intructions_page/${testCreationTableId}/${minsubjectid}`}
-        // to={`/General_intructions_page/${testCreationTableId}`}
+        //  to={`/General_intructions_page/${testCreationTableId}/${minsubjectid}`}
+        to={`/General_intructions_page/${testCreationTableId}`}
           className="intro_next_btn"
         >
           NEXT <AiOutlineArrowRight />

@@ -5,7 +5,9 @@ import HomeLandingPage from './Pages/HomeLandingPage/HomeLandingPage'
 import QuizHome from './Pages/QuizHome/QuizHome'
 // import NewPattern from './Pages/Paper/NewPattern'
 // import Practise2 from './Pages/Paper/Practise2'
-import Practise123 from './Pages/Paper/Practise123'
+// import Practise123 from './Pages/Paper/Practise123'
+import NewPattern from './Pages/Paper/NewPattern'
+
 
 // import Paper1 from './Pages/Paper/Paper1'
 import SubjectTest from './Pages/SubjectTest/SubjectTest'
@@ -37,8 +39,10 @@ function App() {
         {/* <Route path='/getPaperData/:testCreationTableId/:minsubjectid/'  element={<Paper1 />} /> */}
         {/* <Route path='/getPaperData/:testCreationTableId/:minsubjectid/'  element={<Practise2 />} /> */}
 
-        <Route path='/getPaperData/:testCreationTableId/:minsubjectid/'  element={<Practise123/>} />
+        {/* <Route path='/getPaperData/:testCreationTableId/:minsubjectid/'  element={<Practise123/>} /> */}
 
+        <Route path='/getPaperData/:testCreationTableId'  element={<NewPattern/>} />
+        
         {/* <Route path='/getPaperData/:testCreationTableId/:minsubjectid/'  element={<Practise2 />} /> */}
         {/* <Route path='/getPaperData/:testCreationTableId'  element={<NewPattern />} /> */}
        
@@ -49,7 +53,8 @@ function App() {
        
         <Route path='/Instructions/:testCreationTableId' element={<Instructions />} />
         {/* <Route path='/General_intructions_page/:testCreationTableId' element={<General_intructions_page />} /> */}
-        <Route path='/General_intructions_page/:testCreationTableId/:minSubjectId' element={<General_intructions_page />} />
+        {/* <Route path='/General_intructions_page/:testCreationTableId/:minSubjectId' element={<General_intructions_page />} /> */}
+        <Route path='/General_intructions_page/:testCreationTableId' element={<General_intructions_page />} />
         <Route path='/result'  element={<TestResultsPage />} />
       
        </Routes>

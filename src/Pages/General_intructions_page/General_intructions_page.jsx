@@ -650,8 +650,8 @@ export const General_intructions_page_container = ({ seconds }) => {
           // </Link>
           <Link
             // to={`/subjects/${testCreationTableId}/${minsubjectid}`}
-            to={`/getPaperData/${testCreationTableId}/${minsubjectid}`}
-
+            // to={`/getPaperData/${testCreationTableId}/${minsubjectid}`}
+            to={`/getPaperData/${testCreationTableId}`}
             className="gn_next_btn"
 
             // to={`/General_intructions_page/${test.testCreationTableId}/${minsubjectid}`}
