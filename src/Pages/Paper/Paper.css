@@ -157,6 +157,13 @@ body {
   padding-left: 500px;
   padding-top: 200px;
 }
+.option_li{
+  display: flex;
+  gap: 1rem;
+}
+.option_contents{
+  display: flex;
+}
 
 /* .quiz-container button:disabled {
     background: #e7e8e9;

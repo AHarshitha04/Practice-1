@@ -154,6 +154,8 @@ app.get('/subjects/:testCreationTableId', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+
 // app.get('/subjects/:testCreationTableId', async (req, res) => {
 //   const { testCreationTableId } = req.params;
 //   try {
@@ -168,6 +170,7 @@ app.get('/subjects/:testCreationTableId', async (req, res) => {
 //     res.status(500).json({ error: 'Internal Server Error' });
 //   }
 // });
+
 // SELECT subjects.subjectName,subjects.subjectId,questions.question_id FROM test_creation_table JOIN course_creation_table ON test_creation_table.courseCreationId = course_creation_table.courseCreationId JOIN course_subjects ON course_creation_table.courseCreationId = course_subjects.courseCreationId JOIN subjects ON course_subjects.subjectId = subjects.subjectId JOIN questions ON test_creation_table.testCreationTableId= questions.testCreationTableId WHERE test_creation_table.testCreationTableId = 8;
 
 
@@ -327,15 +330,6 @@ app.get('/Test/count', async (req, res) => {
 });
 
 
-
-
-
-
-
-
-
-
-
 app.get("/getPaperData/:testCreationTableId", async (req, res) => {
   try {
     // const subjectId = req.params.subjectId;
@@ -407,7 +401,7 @@ async function getOptionsByQuestionsAndDocumentId(questions, testCreationTableId
   try {
     const questionIds = questions.map(question => question.question_id);
     const query = `
-    SELECT question_id, option_img
+    SELECT question_id,option_index, option_img
     FROM options
     WHERE question_id IN (?)
     `;
@@ -472,29 +466,6 @@ function combineImage(questions, options, solutions) {
  
   return combinedImages;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 // //main working code
@@ -651,6 +622,176 @@ function combineImage(questions, options, solutions) {
 
 //   return combinedImages;
 // }
+
+
+
+
+
+// ----------------------------------------------------user reponses----------------------------------------------
+
+
+
+
+//full main code working 
+app.post('/response', (req, res) => {
+  try {
+    const { responses } = req.body;
+
+    console.log('Received responses from client:', responses);
+
+    // Assuming each response has a question_id property
+    const sql = 'INSERT INTO user_responses (question_id, user_answer) VALUES (?, ?)';
+
+    // Assuming responses is an object where keys are question_ids
+    for (const questionId in responses) {
+      const questionIdNumber = parseInt(questionId, 10);
+
+      if (responses[questionId] && responses[questionId].optionIndexes1 && responses[questionId].optionIndexes2) {
+        const userAnswer1 = responses[questionId].optionIndexes1.join(',');
+        const userAnswer2 = responses[questionId].optionIndexes2.join(',');
+
+        console.log(`Processing responses for question ${questionId}:`, {
+          questionId: questionIdNumber,
+          userAnswer1,
+          userAnswer2,
+        });
+
+        console.log('Executing SQL query:', sql, [questionIdNumber, userAnswer1 + ',' + userAnswer2]);
+
+        db.query(sql, [questionIdNumber, userAnswer1 +"  "+ userAnswer2], (err, result) => {
+          if (err) {
+            console.error('Error saving response to database:', err);
+          } else {
+            console.log(`Response for question ${questionIdNumber} saved to database`);
+          }
+        });
+      } else {
+        console.error(`Invalid response data for question ${questionId}`);
+      }
+    }
+
+    res.json({ success: true, message: 'Responses saved successfully' });
+  } catch (error) {
+    console.error('Error handling the request:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+});
+
+
+
+
+app.put('/updateResponse/:questionId', (req, res) => {
+  try {
+    const questionId = parseInt(req.params.questionId, 10);
+    const { updatedResponse } = req.body;
+
+    if (updatedResponse && updatedResponse.optionIndexes1 && updatedResponse.optionIndexes2) {
+      const userAnswer1 = updatedResponse.optionIndexes1.join(',');
+      const userAnswer2 = updatedResponse.optionIndexes2.join(',');
+
+      const sql = 'UPDATE user_responses SET user_answer = ? WHERE question_id = ?';
+
+      db.query(sql, [userAnswer1 + ',' + userAnswer2, questionId], (err, result) => {
+        if (err) {
+          console.error('Error updating response in the database:', err);
+          res.status(500).json({ success: false, message: 'Internal server error' });
+        } else {
+          if (result.affectedRows > 0) {
+            console.log(`Response for question ${questionId} updated successfully`);
+            res.json({ success: true, message: 'Response updated successfully' });
+          } else {
+            console.error(`No records found for question ${questionId}`);
+            res.status(404).json({ success: false, message: 'Response not found' });
+          }
+        }
+      });
+    } else {
+      console.error(`Invalid updated response data for question ${questionId}`);
+      res.status(400).json({ success: false, message: 'Invalid updated response data' });
+    }
+  } catch (error) {
+    console.error('Error handling the request:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+});
+
+
+
+app.delete('/clearResponse/:questionId', (req, res) => {
+  const questionId = req.params.questionId;
+
+  // Assuming you have a 'responses' table in your database
+  const sql = 'DELETE FROM user_responses WHERE question_id = ?';
+
+  db.query(sql, [questionId], (error, results) => {
+    if (error) {
+      console.error('Error clearing response:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    } else {
+      console.log(`Response for question ${questionId} cleared successfully`);
+      res.status(200).json({ message: 'Response cleared successfully' });
+    }
+  });
+});
+
+app.get('/get_answers', async (req, res) => {
+  try {
+    // const { questionId } = req.params;
+    const [results] = await db.query(`
+    SELECT 
+    ur.question_id,
+    ur.user_answer,
+    ans.answer_text,
+    mt.marks_text
+FROM 
+    user_responses ur
+JOIN 
+    answer ans ON LOWER(TRIM(ur.user_answer)) = LOWER(TRIM(ans.answer_text))
+JOIN 
+    marks mt ON ans.question_id = mt.question_id;
+    `, );
+
+    res.json(results);
+
+  } catch (error) {
+    console.error('Error:', error.message);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+
+
+//for text answer matching query
+// SELECT 
+//     ur.question_id,
+//     ur.user_answer,
+//     ans.answer_text,
+//     mt.marks_text
+// FROM 
+//     user_responses ur
+// JOIN 
+//     answer ans ON LOWER(TRIM(ur.user_answer)) = LOWER(TRIM(ans.answer_text))
+// JOIN 
+//     marks mt ON ans.question_id = mt.question_id;
+
+
+
+//according to correct answer marks adding query
+// SELECT 
+//     ur.question_id,
+//     ur.user_answer,
+//     ans.answer_text,
+//     SUM(mt.marks_text) AS total_marks
+// FROM 
+//     user_responses ur
+// JOIN 
+//     answer ans ON LOWER(TRIM(ur.user_answer)) = LOWER(TRIM(ans.answer_text))
+// JOIN 
+//     marks mt ON ans.question_id = mt.question_id
+// WHERE 
+//     ans.question_id = mt.question_id
+// GROUP BY 
+//     ur.question_id, ur.user_answer, ans.answer_text;
 
 
 

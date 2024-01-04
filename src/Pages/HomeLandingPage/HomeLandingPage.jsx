@@ -509,6 +509,15 @@ export const Quiz_Courses = () => {
     fetchData();
   }, []);
 
+  const currentDate = new Date(); // Get the current date
+
+  // Filter exams based on start and end dates
+  const filteredExams = examCardName.filter(
+    (exam) =>
+      new Date(exam.startDate) <= currentDate && currentDate <= new Date(exam.endDate)
+  );
+
+
   // ------------------------exam cards fetching code------------------------------------------
   return (
     <>
@@ -655,7 +664,7 @@ export const Quiz_Courses = () => {
                   {loading ? (
                     <p>Loading...</p>
                   ) : (
-                    examCardName.map((cardItem) => (
+                    filteredExams.map((cardItem) => (
                       <React.Fragment key={cardItem.examId}>
                         <div className="card_container_li">
                           <img src={iitjee} alt="card" width={350} />

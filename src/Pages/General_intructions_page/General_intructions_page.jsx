@@ -556,6 +556,26 @@ export const General_intructions_page_container = ({ seconds }) => {
   //   fetchSubjects();
   // }, [subjectId]);
 
+  const newWinRef = useRef(null);
+  const openPopup = () => {
+    newWinRef.current = window.open(
+      `/getPaperData/${testCreationTableId}`,
+      '_blank', // Use '_blank' to open in a new window or tab
+      'width=1000,height=1000'
+    );
+
+    document.onmousedown = focusPopup;
+    document.onkeyup = focusPopup;
+    document.onmousemove = focusPopup;
+  };
+
+  const focusPopup = () => {
+    if (newWinRef.current && !newWinRef.current.closed) {
+      newWinRef.current.focus();
+    }
+  };
+
+
   return (
     <>
       <div className="Instructions_container">
@@ -648,10 +668,12 @@ export const General_intructions_page_container = ({ seconds }) => {
           // >
           //   I am ready to begin <AiOutlineArrowRight />
           // </Link>
+          // to={`/getPaperData/${testCreationTableId}`} 
           <Link
             // to={`/subjects/${testCreationTableId}/${minsubjectid}`}
             // to={`/getPaperData/${testCreationTableId}/${minsubjectid}`}
-            to={`/getPaperData/${testCreationTableId}`}
+            //  onClick={openPopup}
+             to={`/getPaperData/${testCreationTableId}`} 
             className="gn_next_btn"
 
             // to={`/General_intructions_page/${test.testCreationTableId}/${minsubjectid}`}

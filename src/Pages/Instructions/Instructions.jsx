@@ -125,6 +125,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import { Link, useParams } from "react-router-dom";
 import "./Instructions.scss";
+
 // =============================== nav-data ===============================
 import { Navbar, Intro_content } from "../../Data/Introduction_page_DATA";
 
@@ -311,6 +312,28 @@ export const Intro_container = () => {
 
     fetchTestData();
   }, [courseCreationId]);
+
+
+
+  // const newWinRef = useRef(null);
+  // const openPopup = () => {
+  //   newWinRef.current = window.open(
+  //     `/General_intructions_page/${testCreationTableId}`,
+  //     '_blank', // Use '_blank' to open in a new window or tab
+  //     'width=1000,height=1000'
+  //   );
+
+  //   document.onmousedown = focusPopup;
+  //   document.onkeyup = focusPopup;
+  //   document.onmousemove = focusPopup;
+  // };
+
+  // const focusPopup = () => {
+  //   if (newWinRef.current && !newWinRef.current.closed) {
+  //     newWinRef.current.focus();
+  //   }
+  // };
+
   return (
     <>
       {/* <div>
@@ -424,9 +447,13 @@ return(
         </Link> */}
         <Link
         //  to={`/General_intructions_page/${testCreationTableId}/${minsubjectid}`}
+       
+        // onClick={openPopup}
         to={`/General_intructions_page/${testCreationTableId}`}
-          className="intro_next_btn"
+         className="intro_next_btn"
         >
+           {/* to={`/General_intructions_page/${testCreationTableId}`} */}
+          {/* <Link to='#' onClick={openPopup} className="intro_next_btn"> */}
           NEXT <AiOutlineArrowRight />
         
         </Link>

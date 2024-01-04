@@ -119,29 +119,29 @@ const Paper1 = () => {
   const [setSubjectId] = useState(/* initial value */);
 
 
-  const clearResponse = () => {
-    // Retrieve questionId after it's declared
-    const questionId = data.questions[currentQuestionIndex].question_id;
+  // const clearResponse = () => {
+  //   // Retrieve questionId after it's declared
+  //   const questionId = data.questions[currentQuestionIndex].question_id;
 
-    // Create a copy of the selected answers map
-    const updatedSelectedAnswersMap = { ...selectedAnswersMap };
-    // Set the answer for the current question to null
-    updatedSelectedAnswersMap[questionId] = null;
-
-
-
-    // Create a copy of the selected answers map
-    const updatedSelectedAnswersMap = { ...selectedAnswersMap };
-
-
-    // Set the answer for the current question to null
-    updatedSelectedAnswersMap[questionId] = null;
+  //   // Create a copy of the selected answers map
+  //   const updatedSelectedAnswersMap = { ...selectedAnswersMap };
+  //   // Set the answer for the current question to null
+  //   updatedSelectedAnswersMap[questionId] = null;
 
 
 
-    // Update the state with the new selected answers map
-    setSelectedAnswersMap(updatedSelectedAnswersMap);
-  };
+  //   // Create a copy of the selected answers map
+  //   const updatedSelectedAnswersMap = { ...selectedAnswersMap };
+
+
+  //   // Set the answer for the current question to null
+  //   updatedSelectedAnswersMap[questionId] = null;
+
+
+
+  //   // Update the state with the new selected answers map
+  //   setSelectedAnswersMap(updatedSelectedAnswersMap);
+  // };
 
 
   const handlePreviousClick = () => {

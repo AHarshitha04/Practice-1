@@ -16,8 +16,9 @@ import Payment from './Pages/Payment/Payment'
 import DownloadQuizPage from './Pages/DownloadQuizPage/DownloadQuizPage'
 import CoursePage from './Pages/HomeLandingPage/CoursePage'
 import Document_ImageInfo from './Pages/Paper/Document_ImageInfo';
+import ExamSummary from './Pages/Paper/Exam_Summary';
+import SubmitPage from './Pages/Paper/Submit_Page';
 import TestResultsPage from './Pages/Paper/TestResultsPage';
-
 
 function App() {
 
@@ -44,8 +45,9 @@ function App() {
         <Route path='/Instructions/:testCreationTableId' element={<Instructions />} />
         <Route path='/General_intructions_page/:testCreationTableId' element={<General_intructions_page />} />
         {/* <Route path='/General_intructions_page/:testCreationTableId/:minSubjectId' element={<General_intructions_page />} /> */}
-        <Route path='/result'  element={<TestResultsPage />} />
-      
+        <Route path='/ExamSummary'  element={<ExamSummary />} />
+        <Route path='/SubmitPage'  element={<SubmitPage />} />
+        <Route path='/TestResultsPage'  element={<TestResultsPage />} />
        </Routes>
     </BrowserRouter>
 

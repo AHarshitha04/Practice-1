@@ -134,12 +134,12 @@ align-items: center;
     padding: 9px;   
 }
  
-.instruction-btn6 {
+/* .instruction-btn6 {
     border: 1px solid black;
     border-radius: 5px;
     padding: 9px;   
     background: red;
-}
+} */
 
 .right_bar_Buttons {
     cursor: pointer;

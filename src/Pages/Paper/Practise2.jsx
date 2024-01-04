@@ -2067,6 +2067,7 @@ const Practise2 = () => {
     console.log("Before state update", currentQuestionIndex);
     setCurrentQuestionIndex((prevIndex) => {
       if (prevIndex < data.questions.length - 1) {
+        // console.log(data.questions.length - 1)
         // If there are more questions in the current section, move to the next question
         return prevIndex + 1;
       }
@@ -2508,6 +2509,7 @@ const Practise2 = () => {
                 Next <i className="fa-solid fa-angles-right"></i>
               </button>
             </div>
+            
           </div>
 
           <div className="rightsidebar">
