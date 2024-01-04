@@ -883,7 +883,7 @@ const db = mysql.createPool({
   host: "localhost",
   user: "root",
   password: "",
-  database: "admin_project",
+  database: "admin_project1",
 });
 
 const storage = multer.diskStorage({
