@@ -18,11 +18,11 @@ const db = mysql.createPool({
   host: "localhost",
   user: "root",
   password: "",
-<<<<<<< HEAD
+
   database: "admin_project",
-=======
-  database: "admin_project3",
->>>>>>> 8c249cff6b0c92a031cb4faa6d81a36bf215dc12
+
+
+
 });
 
 
