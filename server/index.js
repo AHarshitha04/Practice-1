@@ -18,7 +18,7 @@ const db = mysql.createPool({
   host: "localhost",
   user: "root",
   password: "",
-  database: "admin_project",
+  database: "admin_project1",
 });
 
 
@@ -154,7 +154,6 @@ app.get('/subjects/:testCreationTableId', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
-
 
 // app.get('/subjects/:testCreationTableId', async (req, res) => {
 //   const { testCreationTableId } = req.params;
@@ -328,6 +327,91 @@ app.get('/Test/count', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+
+
+  // app.get('/questionOptions/:testCreationTableId', async (req, res) => {
+  //   const { testCreationTableId } = req.params;
+  //   try {
+  //     const [rows] = await db.query(`
+  //     SELECT
+  //     q.question_id,
+  //     q.questionImgName,
+  //     o.option_id,
+  //     o.optionImgName,
+  //     qt.qtypeId,
+  //     qt.qtype_text,
+  //     q.testCreationTableId
+  // FROM
+  //     questions q
+  // LEFT OUTER JOIN OPTIONS o ON
+  //     q.question_id = o.question_id
+  // LEFT OUTER JOIN qtype qt ON
+  //     q.question_id = qt.question_id
+  // WHERE
+  //     q.testCreationTableId = ? ;
+  //     `, [testCreationTableId]);
+  
+  //     // Check if rows is not empty
+  //     if (rows.length > 0) {
+  //       const questionData = {
+  //         questions: [],
+  //       };
+  
+  //       // Organize data into an array of questions
+  //       rows.forEach(row => {
+  //         const existingQuestion = questionData.questions.find(q => q.question_id === row.question_id);
+  
+  //         if (existingQuestion) {
+  //           // Question already exists, add option to the existing question
+  //           existingQuestion.options.push({
+  //             option_id: row.option_id,
+  //             // option_index:row.option_index,
+  //             optionImgName: row.optionImgName,
+  //           });
+  //         } else {
+  //           // Question doesn't exist, create a new question
+  //           const newQuestion = {
+  //             question_id: row.question_id,
+  //             questionImgName: row.questionImgName,
+             
+  //             options: [
+  //               {
+  //                 option_id: row.option_id,
+  //                 optionImgName: row.optionImgName,
+  //               },
+  //             ],
+            
+  //             qtype:{
+  //               qtypeId:row.qtypeId,
+  //               qtype_text:row.qtype_text,
+  //             },
+  //           };
+  //           questionData.questions.push(newQuestion);
+  //         }
+  //       });
+  
+  //       res.json(questionData);
+  //     } else {
+  //       // Handle the case where no rows are returned (empty result set)
+  //       res.status(404).json({ error: 'No data found' });
+  //     }
+  //   } catch (error) {
+  //     console.error('Error fetching question data:', error);
+  //     res.status(500).json({ error: 'Internal Server Error' });
+  //   }
+  // });
+  
+
+
+
+
+
+
+
+
+
+
 
 
 app.get("/getPaperData/:testCreationTableId", async (req, res) => {

@@ -138,14 +138,14 @@
 //     );
 //   };
 
-//   const handleNextClick = () => {
-//     setCurrentQuestionIndex((prevIndex) => {
-//       if (prevIndex < data.questions.length - 1) {
-//         // If there are more questions in the current section, move to the next question
-//         return prevIndex + 1;
-//       }
-//     });
-//   };
+  // const handleNextClick = () => {
+  //   setCurrentQuestionIndex((prevIndex) => {
+  //     if (prevIndex < data.questions.length - 1) {
+  //       // If there are more questions in the current section, move to the next question
+  //       return prevIndex + 1;
+  //     }
+  //   });
+  // };
 
 //   const handleSubmit = () => {
 //     window.alert("Your Test has been Submitted!! Click Ok to See Result.");
